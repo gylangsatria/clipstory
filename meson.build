@@ -24,3 +24,8 @@ install_data(
     'data/icons/hicolor/128x128/apps/clipboard-history.png',
     install_dir: join_paths(get_option('datadir'), 'icons/hicolor/128x128/apps')
 )
+
+install_data(
+    'data/clipboard-history-autostart.desktop',
+    install_dir: join_paths(get_option('sysconfdir'), 'xdg', 'autostart')
+)
