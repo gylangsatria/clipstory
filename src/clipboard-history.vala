@@ -47,6 +47,9 @@ public class ClipboardHistory : Object {
     }
 
     public void copy_again(string text) {
+        // Set last_text sebelum mengubah clipboard agar signal owner_change
+        // yang dipicu oleh set_text/store tidak memproses ulang teks yang sama
+        last_text = text;
         clipboard.set_text(text, -1);
         clipboard.store(); 
     }

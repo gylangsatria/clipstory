@@ -15,6 +15,7 @@
 | 7   | Version mismatch                            | Fixed                   | `fix: sync deb package version with app version (1.2 -> 1.2.0)`   |
 | 8   | No autostart configuration                  | Fixed                   | `feat: add autostart configuration for clipboard manager`         |
 | 9   | Redundant clipboard polling mechanism       | Fixed                   | `fix: remove redundant clipboard polling timer`                   |
+| 11  | copy_again() triggers unnecessary owner_change signal | Fixed | `fix: prevent unnecessary owner_change signal in copy_again()` |
 | 13  | Improve .gitignore                          | Done                    | `chore: improve .gitignore with build artifacts and editor files` |
 
 ### Remaining Issues
