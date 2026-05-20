@@ -48,10 +48,15 @@
 17. **Add keyboard shortcuts**
     - No keyboard shortcuts exist (e.g., `Ctrl+F` to focus search, `Delete` to remove selected item, `Escape` to close window).
 
+18. **Wingpanel indicator integration**
+    - Add a Wingpanel indicator icon in the top panel so users can access clipboard history without opening the full window.
+    - The indicator popover would show recent history items and quick actions (copy, pin, clear).
+    - Requires a separate Wingpanel plugin (shared library).
+
 ### Priority Summary (Remaining)
 
 | Priority | Items                                                                       |
 | -------- | --------------------------------------------------------------------------- |
 | High     | —                                                                           |
-| Medium   | —                                                                           |
-| Low      | #17 (improvements)  |
+| Medium   | #18 (Wingpanel indicator)                                                   |
+| Low      | #17 (keyboard shortcuts)  |
