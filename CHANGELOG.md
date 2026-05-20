@@ -13,17 +13,13 @@
 | 5   | Typo in asset filename                      | Fixed                   | `fix: correct typo in asset filename (cliboard -> clipboard)`     |
 | 6   | Gtk.StatusIcon is deprecated                | Resolved (file deleted) | `chore: remove unused indicator.vala (dead code)`                 |
 | 7   | Version mismatch                            | Fixed                   | `fix: sync deb package version with app version (1.2 -> 1.2.0)`   |
+| 8   | No autostart configuration                  | Fixed                   | `feat: add autostart configuration for clipboard manager`         |
+| 9   | Redundant clipboard polling mechanism       | Fixed                   | `fix: remove redundant clipboard polling timer`                   |
 | 13  | Improve .gitignore                          | Done                    | `chore: improve .gitignore with build artifacts and editor files` |
 
 ### Remaining Issues
 
 #### Medium Severity Issues
-
-8. **No autostart configuration**
-   - The application lacks a `.desktop` file in `~/.config/autostart/`, which is expected for a clipboard manager that should run automatically at login.
-
-9. **Redundant clipboard polling mechanism**
-   - Two mechanisms detect clipboard changes: the `owner_change` signal and a `Timeout.add(1000)` polling timer. One should suffice (preferably the signal), since `request_text` is already asynchronous.
 
 10. **max_items is hardcoded**
     - `max_items = 50` is hardcoded in `ClipboardHistory`. It should be configurable by the user via GUI or a configuration file.
@@ -56,8 +52,8 @@
 
 ### Priority Summary (Remaining)
 
-| Priority | Items                                                                         |
-| -------- | ----------------------------------------------------------------------------- |
-| High     | —                                                                             |
-| Medium   | #8 (autostart), #9 (redundant polling), #12 (README uninstall)                |
-| Low      | #10 (max_items hardcoded), #11 (extra owner_change), #14-20 (improvements)    |
+| Priority | Items                                                                       |
+| -------- | --------------------------------------------------------------------------- |
+| High     | —                                                                           |
+| Medium   | #12 (README uninstall)                                                      |
+| Low      | #10 (max_items hardcoded), #11 (extra owner_change), #14-20 (improvements)  |
