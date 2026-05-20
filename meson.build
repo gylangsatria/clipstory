@@ -3,6 +3,7 @@ project('clipboard-history', 'vala', version: '1.3.0')
 gtk = dependency('gtk+-3.0')
 granite = dependency('granite')
 gee = dependency('gee-0.8')
+json_glib = dependency('json-glib-1.0')
 
 executable(
     'clipboard-history',
@@ -11,7 +12,7 @@ executable(
         'src/window.vala',
         'src/clipboard-history.vala'
     ],
-    dependencies: [gtk, granite, gee],
+    dependencies: [gtk, granite, gee, json_glib],
     install: true
 )
 
