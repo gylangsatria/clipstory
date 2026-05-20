@@ -1,5 +1,21 @@
 # Changelog / Code Review
 
+## Version 1.3.0
+
+### New Features
+- Configurable max history items via settings popover
+- JSON file persistence for clipboard history
+- Dark mode toggle
+
+### Bug Fixes & Improvements
+- Prevent unnecessary `owner_change` signal in `copy_again()`
+- Add GTK and X-GNOME-Utilities to desktop file categories
+- Improve search placeholder text
+- Simplify `get_preview()` function
+- Correct uninstall command in README
+
+---
+
 ## Version 1.2.0 — Bug Report & Improvement Suggestions
 
 ### Fixes Applied
