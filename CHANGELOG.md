@@ -10,22 +10,14 @@
 | 2   | ClipboardIndicator class never instantiated | Resolved (file deleted) | `chore: remove unused indicator.vala (dead code)`                 |
 | 3   | refresh_list() not called on startup        | Fixed                   | `fix: call refresh_list() on startup to populate initial UI`      |
 | 4   | Timeout timer never stopped                 | Fixed                   | `fix: prevent dangling timer reference in ClipboardHistory`       |
+| 5   | Typo in asset filename                      | Fixed                   | `fix: correct typo in asset filename (cliboard -> clipboard)`     |
+| 6   | Gtk.StatusIcon is deprecated                | Resolved (file deleted) | `chore: remove unused indicator.vala (dead code)`                 |
+| 7   | Version mismatch                            | Fixed                   | `fix: sync deb package version with app version (1.2 -> 1.2.0)`   |
 | 13  | Improve .gitignore                          | Done                    | `chore: improve .gitignore with build artifacts and editor files` |
 
 ### Remaining Issues
 
-#### Bug & Critical Issues
-
-5. **Typo in asset filename**
-   - `assets/cliboard-history-full.png` is missing the letter 'p' (should be `clipboard-history-full.png`).
-
 #### Medium Severity Issues
-
-6. **Gtk.StatusIcon is deprecated**
-   - `src/indicator.vala` uses `Gtk.StatusIcon`, which has been deprecated since GTK 3.14. Prefer `Gio.Application` with notifications or `Gtk.ApplicationWindow` instead. (Resolved — `indicator.vala` was deleted as dead code.)
-
-7. **Version mismatch**
-   - `deb-package/DEBIAN/control` lists `Version: 1.2`, but the About dialog in `window.vala` shows `v1.2.0`.
 
 8. **No autostart configuration**
    - The application lacks a `.desktop` file in `~/.config/autostart/`, which is expected for a clipboard manager that should run automatically at login.
@@ -53,10 +45,7 @@
 16. **Simplify get_preview function**
     - In `window.vala`, `get_preview()` splits on `\n` and then checks `lines.length == 0`, but the split result can never be empty (at least one element). This check is redundant.
 
-17. **Remove dead code or properly implement indicator**
-    - Either delete `indicator.vala` since it is unused, or integrate it into `main.vala` using a modern tray icon mechanism. (Resolved — file deleted.)
-
-18. **Add keyboard shortcuts**
+17. **Add keyboard shortcuts**
     - No keyboard shortcuts exist (e.g., `Ctrl+F` to focus search, `Delete` to remove selected item, `Escape` to close window).
 
 19. **Persist clipboard history**
@@ -67,8 +56,8 @@
 
 ### Priority Summary (Remaining)
 
-| Priority | Items                                                                                          |
-| -------- | ---------------------------------------------------------------------------------------------- |
-| High     | —                                                                                              |
-| Medium   | #7 (version mismatch), #8 (autostart), #9 (redundant polling), #12 (README uninstall)          |
-| Low      | #5 (typo in asset), #10 (max_items hardcoded), #11 (extra owner_change), #14-20 (improvements) |
+| Priority | Items                                                                         |
+| -------- | ----------------------------------------------------------------------------- |
+| High     | —                                                                             |
+| Medium   | #8 (autostart), #9 (redundant polling), #12 (README uninstall)                |
+| Low      | #10 (max_items hardcoded), #11 (extra owner_change), #14-20 (improvements)    |

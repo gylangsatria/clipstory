@@ -6,4 +6,4 @@ Architecture: amd64
 Maintainer: gylangsatria
 Depends: libgtk-3-0, libgranite6, libgee-0.8-2
 Description: clipboard history for elementary os
- A clipboard manager with history feature for elementary OS.
+A clipboard manager with history feature for elementary OS.
