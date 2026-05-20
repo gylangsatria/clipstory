@@ -27,6 +27,15 @@ main
 .DS_Store
 Thumbs.db
 
+# Debian package
+*.deb
+deb-package.deb/
+
+# Vala generated C files
+*.vala.c
+*.vala.h
+*.vala.stamp
+
 # Project notes
 .data/
 note.md
