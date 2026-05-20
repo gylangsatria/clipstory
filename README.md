@@ -27,12 +27,13 @@ Designed to integrate well with elementary OS style and workflows.
 * GTK 3
 * Granite
 * Gee (collections library)
+* JSON-GLib
 * Vala compiler
 
 Install dependencies on Ubuntu / elementary OS:
 
 ```bash
-sudo apt install valac libgtk-3-dev libgranite-dev libgee-0.8-dev
+sudo apt install valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-dev
 ```
 
 ## Build
@@ -46,7 +47,8 @@ cd clipboard-history-elementaryos
 valac src/*.vala \
 --pkg gtk+-3.0 \
 --pkg granite \
---pkg gee-0.8
+--pkg gee-0.8 \
+--pkg json-glib-1.0
 ```
 
 ## Run
