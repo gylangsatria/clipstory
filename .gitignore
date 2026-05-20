@@ -1,4 +1,33 @@
-clipboard-manager
+# Build artifacts
+build/
+*-stamp
+*.o
+*.a
+*.so
+
+# Compiled binary
+clipboard-history
+main
+
+# Temporary files
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# Editor/IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project notes
 .data/
 note.md
 dev-setup.sh
