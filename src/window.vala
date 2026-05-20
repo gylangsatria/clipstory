@@ -146,7 +146,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         box.margin = 12;
         
         search = new Gtk.SearchEntry();
-        search.placeholder_text = "Search clipboard";
+        search.placeholder_text = "Search clipboard history...";
         
         list = new Gtk.ListBox();
         list.selection_mode = SelectionMode.NONE;
