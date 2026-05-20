@@ -92,6 +92,38 @@ public class MainWindow : Gtk.ApplicationWindow {
         dark_mode_box.pack_start(dark_mode_label, false, false, 0);
         dark_mode_box.pack_start(dark_mode_switch, false, false, 0);
         
+        // Tombol settings
+        var settings_button = new Gtk.Button.from_icon_name("emblem-system-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+        settings_button.tooltip_text = "Settings";
+        settings_button.relief = ReliefStyle.NONE;
+        
+        var settings_popover = new Gtk.Popover(settings_button);
+        settings_popover.position = PositionType.BOTTOM;
+        
+        var settings_grid = new Gtk.Grid();
+        settings_grid.margin = 12;
+        settings_grid.row_spacing = 8;
+        settings_grid.column_spacing = 12;
+        
+        var max_items_label = new Gtk.Label("Max History Items:");
+        max_items_label.xalign = 0;
+        
+        var max_items_spin = new Gtk.SpinButton.with_range(10, 500, 5);
+        max_items_spin.value = manager.max_items;
+        max_items_spin.tooltip_text = "Maximum number of clipboard items to store";
+        
+        max_items_spin.value_changed.connect(() => {
+            manager.max_items = (int)max_items_spin.value;
+        });
+        
+        settings_grid.attach(max_items_label, 0, 0, 1, 1);
+        settings_grid.attach(max_items_spin, 1, 0, 1, 1);
+        settings_popover.add(settings_grid);
+        
+        settings_button.clicked.connect(() => {
+            settings_popover.show_all();
+        });
+        
         // tombol clear all
         var clear_button = new Gtk.Button.with_label("Clear");
         clear_button.tooltip_text = "Clear all history";
@@ -104,6 +136,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         header_box.pack_start(dark_mode_box, false, false, 0);
         header_box.pack_end(clear_button, false, false, 0);
+        header_box.pack_end(settings_button, false, false, 0);
         
         header.set_custom_title(header_box);
         

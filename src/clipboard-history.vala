@@ -6,7 +6,19 @@ public class ClipboardHistory : Object {
     public ArrayList<string> history = new ArrayList<string>();
     private Clipboard clipboard;
     private string last_text = "";
-    private int max_items = 50;
+    private int _max_items = 50;
+
+    public int max_items {
+        get { return _max_items; }
+        set {
+            _max_items = value;
+            // Trim history jika melebihi batas baru
+            while (history.size > _max_items) {
+                history.remove_at(history.size - 1);
+            }
+            history_changed();
+        }
+    }
 
     public signal void history_changed();
 

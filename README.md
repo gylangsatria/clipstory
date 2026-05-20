@@ -79,7 +79,7 @@ sudo ninja install
 
 4. For uninstall use this command : 
 ```
-sudo meson install -C build
+sudo ninja -C build uninstall
 ```
 
 ### Build .deb File

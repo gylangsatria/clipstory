@@ -15,21 +15,17 @@
 | 7   | Version mismatch                            | Fixed                   | `fix: sync deb package version with app version (1.2 -> 1.2.0)`   |
 | 8   | No autostart configuration                  | Fixed                   | `feat: add autostart configuration for clipboard manager`         |
 | 9   | Redundant clipboard polling mechanism       | Fixed                   | `fix: remove redundant clipboard polling timer`                   |
+| 10  | max_items is hardcoded                      | Fixed                   | `feat: make max_items configurable via settings popover`          |
 | 11  | copy_again() triggers unnecessary owner_change signal | Fixed | `fix: prevent unnecessary owner_change signal in copy_again()` |
+| 12  | Incorrect uninstall instruction in README    | Fixed                   | `fix: correct uninstall command in README (meson install -> ninja uninstall)` |
 | 13  | Improve .gitignore                          | Done                    | `chore: improve .gitignore with build artifacts and editor files` |
 
 ### Remaining Issues
 
 #### Medium Severity Issues
 
-10. **max_items is hardcoded**
-    - `max_items = 50` is hardcoded in `ClipboardHistory`. It should be configurable by the user via GUI or a configuration file.
-
 11. **copy_again() triggers unnecessary owner_change signal**
     - `clipboard.set_text()` followed by `clipboard.store()` in `copy_again()` fires the `owner_change` signal, which calls `check_clipboard_async()` again. Although protected by the `last_text` check, this is an unnecessary operation.
-
-12. **Incorrect uninstall instruction in README**
-    - The README states `sudo meson install -C build` for uninstall, but that is the **install** command. The correct uninstall command is `sudo ninja -C build uninstall`.
 
 #### Suggestions for Improvement
 
@@ -56,5 +52,5 @@
 | Priority | Items                                                                       |
 | -------- | --------------------------------------------------------------------------- |
 | High     | —                                                                           |
-| Medium   | #12 (README uninstall)                                                      |
-| Low      | #10 (max_items hardcoded), #11 (extra owner_change), #14-20 (improvements)  |
+| Medium   | —                                                                           |
+| Low      | #11 (extra owner_change), #14-20 (improvements)  |
