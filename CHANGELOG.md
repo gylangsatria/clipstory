@@ -21,20 +21,16 @@
 | 13  | Improve .gitignore                          | Done                    | `chore: improve .gitignore with build artifacts and editor files` |
 | 14  | Improve Desktop file categories             | Fixed                   | `feat: add GTK and X-GNOME-Utilities to desktop file categories` |
 | 15  | Improve SearchEntry placeholder text        | Fixed                   | `fix: update placeholder text to "Search clipboard history..."` |
+| 16  | Simplify get_preview function               | Fixed                   | `refactor: remove redundant lines.length == 0 check in get_preview` |
 | 19  | Persist clipboard history                   | Fixed                   | `feat: add JSON file persistence for clipboard history` |
+| 20  | Add max_items configuration UI              | Fixed                   | `feat: make max_items configurable via settings popover` |
 
 ### Remaining Issues
 
 #### Suggestions for Improvement
 
-16. **Simplify get_preview function**
-    - In `window.vala`, `get_preview()` splits on `\n` and then checks `lines.length == 0`, but the split result can never be empty (at least one element). This check is redundant.
-
 17. **Add keyboard shortcuts**
     - No keyboard shortcuts exist (e.g., `Ctrl+F` to focus search, `Delete` to remove selected item, `Escape` to close window).
-
-20. **Add max_items configuration UI**
-    - Add preferences/settings so users can configure the maximum number of history items through the GUI.
 
 ### Priority Summary (Remaining)
 
@@ -42,4 +38,4 @@
 | -------- | --------------------------------------------------------------------------- |
 | High     | —                                                                           |
 | Medium   | —                                                                           |
-| Low      | #16-17, #20 (improvements)  |
+| Low      | #17 (improvements)  |

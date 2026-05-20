@@ -379,13 +379,7 @@ void apply_dark_mode(bool dark) {
     
     // Fungsi untuk mendapatkan preview teks (baris pertama)
     string get_preview(string text) {
-        // Pisahkan berdasarkan newline
         string[] lines = text.split("\n");
-        
-        if (lines.length == 0) {
-            return "";
-        }
-        
         string first_line = lines[0];
         
         // Jika hanya satu baris dan pendek
@@ -393,15 +387,14 @@ void apply_dark_mode(bool dark) {
             return first_line;
         }
         
-        // Jika ada banyak baris atau baris pertama panjang
+        // Jika ada banyak baris — tampilkan baris pertama + indikator jumlah baris
         if (lines.length > 1) {
-            // Tampilkan baris pertama + indikator jumlah baris
             string preview = truncate_text(first_line, 60);
             return @"$preview [$(lines.length) lines]";
-        } else {
-            // Baris pertama panjang
-            return truncate_text(first_line, 80);
         }
+        
+        // Baris pertama panjang
+        return truncate_text(first_line, 80);
     }
     
     void refresh_list() {
