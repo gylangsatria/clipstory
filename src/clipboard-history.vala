@@ -7,6 +7,7 @@ public class ClipboardHistory : Object {
     private Clipboard clipboard;
     private string last_text = "";
     private int max_items = 50;
+    private uint poll_timer_id = 0;
 
     public signal void history_changed();
 
@@ -18,10 +19,17 @@ public class ClipboardHistory : Object {
             check_clipboard_async();
         });
 
-        Timeout.add(1000, () => {
+        poll_timer_id = Timeout.add(1000, () => {
             check_clipboard_async();
             return true;
         });
+    }
+
+    ~ClipboardHistory () {
+        if (poll_timer_id > 0) {
+            Source.remove(poll_timer_id);
+            poll_timer_id = 0;
+        }
     }
 
     void check_clipboard_async() {
