@@ -64,8 +64,8 @@ public class ClipboardHistory : Object {
             last_text = cleaned_text;
 
             // hindari duplikat
-            history.remove(text);
-            history.insert(0, text);
+            history.remove(cleaned_text);
+            history.insert(0, cleaned_text);
 
             // limit history
             if (history.size > max_items) {

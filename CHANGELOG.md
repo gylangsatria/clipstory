@@ -8,6 +8,7 @@
 - Dark mode toggle
 
 ### Bug Fixes & Improvements
+- Fix text stripping inconsistency in `check_clipboard_async()` (use `cleaned_text` instead of `text` for history storage)
 - Prevent unnecessary `owner_change` signal in `copy_again()`
 - Add GTK and X-GNOME-Utilities to desktop file categories
 - Improve search placeholder text
