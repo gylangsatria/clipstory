@@ -194,6 +194,9 @@ public class MainWindow : Gtk.ApplicationWindow {
             refresh_list();
         });
         
+        // Initial population of the list
+        refresh_list();
+        
         this.show_all();
         
         // Pastikan window mendapatkan fokus saat dibuka
