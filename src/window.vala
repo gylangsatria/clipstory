@@ -252,15 +252,37 @@ public class MainWindow : Gtk.ApplicationWindow {
         this.present();
     }
     
-    // Cek apakah autostart sudah aktif
+    // Cek apakah file autostart memiliki Hidden=true
+    bool is_file_disabled(string path) {
+        try {
+            string content;
+            FileUtils.get_contents(path, out content);
+            return content.contains("Hidden=true");
+        } catch (Error e) {
+            return false;
+        }
+    }
+    
+    // Cek apakah autostart aktif (user file atau system file)
     bool is_autostart_enabled() {
-        string autostart_dir = Path.build_filename(
-            Environment.get_user_config_dir(), "autostart"
+        string user_file = Path.build_filename(
+            Environment.get_user_config_dir(), "autostart",
+            "clipboard-history-autostart.desktop"
         );
-        string autostart_file = Path.build_filename(
-            autostart_dir, "clipboard-history-autostart.desktop"
-        );
-        return FileUtils.test(autostart_file, FileTest.EXISTS);
+        string system_file = "/etc/xdg/autostart/clipboard-history-autostart.desktop";
+        
+        // Jika user override file exists:
+        if (FileUtils.test(user_file, FileTest.EXISTS)) {
+            // Enabled hanya jika tidak ada Hidden=true
+            return !is_file_disabled(user_file);
+        }
+        
+        // Jika tidak ada user file, cek system file
+        if (FileUtils.test(system_file, FileTest.EXISTS)) {
+            return !is_file_disabled(system_file);
+        }
+        
+        return false;
     }
     
     // Mengaktifkan/menonaktifkan autostart
@@ -272,13 +294,12 @@ public class MainWindow : Gtk.ApplicationWindow {
             autostart_dir, "clipboard-history-autostart.desktop"
         );
         
+        // Buat direktori autostart jika belum ada
+        DirUtils.create_with_parents(autostart_dir, 0755);
+        
         if (enable) {
-            // Buat direktori autostart jika belum ada
-            DirUtils.create_with_parents(autostart_dir, 0755);
-            
-            // Tulis file autostart desktop
-            string desktop_content = """
-[Desktop Entry]
+            // Tulis file autostart aktif (override system file)
+            string desktop_content = """[Desktop Entry]
 Name=Clipboard History
 Comment=Start clipboard history manager at login
 Exec=clipboard-history
@@ -295,13 +316,23 @@ X-GNOME-Autostart-Delay=10
                 warning("Failed to enable autostart: %s", e.message);
             }
         } else {
-            // Hapus file autostart
-            if (FileUtils.test(autostart_file, FileTest.EXISTS)) {
-                try {
-                    FileUtils.remove(autostart_file);
-                } catch (Error e) {
-                    warning("Failed to disable autostart: %s", e.message);
-                }
+            // Tulis file override dengan Hidden=true untuk menonaktifkan
+            // (mencegah system-wide file di /etc/xdg/autostart/ tetap jalan)
+            string desktop_content = """[Desktop Entry]
+Name=Clipboard History
+Comment=Start clipboard history manager at login
+Exec=clipboard-history
+Icon=clipboard-history
+Terminal=false
+Type=Application
+Categories=Utility;GTK;X-GNOME-Utilities;
+Hidden=true
+X-GNOME-Autostart-enabled=false
+""";
+            try {
+                FileUtils.set_contents(autostart_file, desktop_content);
+            } catch (Error e) {
+                warning("Failed to disable autostart: %s", e.message);
             }
         }
     }
