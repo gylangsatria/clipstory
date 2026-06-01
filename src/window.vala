@@ -116,8 +116,24 @@ public class MainWindow : Gtk.ApplicationWindow {
             manager.max_items = (int)max_items_spin.value;
         });
         
+        // Autostart toggle
+        var autostart_label = new Gtk.Label("Auto Start:");
+        autostart_label.xalign = 0;
+        
+        var autostart_switch = new Gtk.Switch();
+        autostart_switch.halign = Align.START;
+        autostart_switch.valign = Align.CENTER;
+        autostart_switch.active = is_autostart_enabled();
+        autostart_switch.tooltip_text = "Start Clipboard History automatically at login";
+        
+        autostart_switch.notify["active"].connect(() => {
+            set_autostart(autostart_switch.active);
+        });
+        
         settings_grid.attach(max_items_label, 0, 0, 1, 1);
         settings_grid.attach(max_items_spin, 1, 0, 1, 1);
+        settings_grid.attach(autostart_label, 0, 1, 1, 1);
+        settings_grid.attach(autostart_switch, 1, 1, 1, 1);
         settings_popover.add(settings_grid);
         
         settings_button.clicked.connect(() => {
@@ -234,6 +250,60 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         // Pastikan window mendapatkan fokus saat dibuka
         this.present();
+    }
+    
+    // Cek apakah autostart sudah aktif
+    bool is_autostart_enabled() {
+        string autostart_dir = Path.build_filename(
+            Environment.get_user_config_dir(), "autostart"
+        );
+        string autostart_file = Path.build_filename(
+            autostart_dir, "clipboard-history-autostart.desktop"
+        );
+        return FileUtils.test(autostart_file, FileTest.EXISTS);
+    }
+    
+    // Mengaktifkan/menonaktifkan autostart
+    void set_autostart(bool enable) {
+        string autostart_dir = Path.build_filename(
+            Environment.get_user_config_dir(), "autostart"
+        );
+        string autostart_file = Path.build_filename(
+            autostart_dir, "clipboard-history-autostart.desktop"
+        );
+        
+        if (enable) {
+            // Buat direktori autostart jika belum ada
+            DirUtils.create_with_parents(autostart_dir, 0755);
+            
+            // Tulis file autostart desktop
+            string desktop_content = """
+[Desktop Entry]
+Name=Clipboard History
+Comment=Start clipboard history manager at login
+Exec=clipboard-history
+Icon=clipboard-history
+Terminal=false
+Type=Application
+Categories=Utility;GTK;X-GNOME-Utilities;
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Delay=10
+""";
+            try {
+                FileUtils.set_contents(autostart_file, desktop_content);
+            } catch (Error e) {
+                warning("Failed to enable autostart: %s", e.message);
+            }
+        } else {
+            // Hapus file autostart
+            if (FileUtils.test(autostart_file, FileTest.EXISTS)) {
+                try {
+                    FileUtils.remove(autostart_file);
+                } catch (Error e) {
+                    warning("Failed to disable autostart: %s", e.message);
+                }
+            }
+        }
     }
     
     void show_about_dialog() {

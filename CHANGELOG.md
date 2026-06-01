@@ -6,6 +6,7 @@
 - Configurable max history items via settings popover
 - JSON file persistence for clipboard history
 - Dark mode toggle
+- Auto Start toggle in settings (enable/disable startup via GUI)
 
 ### Bug Fixes & Improvements
 - Fix text stripping inconsistency in `check_clipboard_async()` (use `cleaned_text` instead of `text` for history storage)
