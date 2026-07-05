@@ -29,7 +29,10 @@ Thumbs.db
 
 # Debian package
 *.deb
-deb-package.deb/
+deb-package.deb
+deb-package/usr/bin/
+deb-package/usr/share/
+deb-package/etc/
 
 # Vala generated C files
 *.vala.c

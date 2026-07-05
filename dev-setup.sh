@@ -61,6 +61,7 @@ uninstall_packages() {
     echo "  - libgtk-3-dev"
     echo "  - libgranite-dev"
     echo "  - libgee-0.8-dev"
+    echo "  - libjson-glib-dev"
     echo ""
     read -p "Continue? (y/n): " -n 1 -r
     echo ""
@@ -68,7 +69,7 @@ uninstall_packages() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Uninstall packages
         print_message "Removing packages..."
-        sudo apt remove --purge -y meson ninja-build valac libgtk-3-dev libgranite-dev libgee-0.8-dev
+        sudo apt remove --purge -y meson ninja-build valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-dev
         
         # Remove unnecessary dependencies
         print_message "Cleaning up unnecessary dependencies..."
@@ -102,9 +103,67 @@ check_status() {
     done
 }
 
-# Function to build project and create .deb package
+# Function to configure build directory
+build_project() {
+    print_message "Configuring build directory with meson..."
+    if [ -d "build" ]; then
+        read -p "Build directory exists. Reconfigure? (y/n): " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            meson setup --reconfigure build
+        else
+            print_message "Skipped."
+            return
+        fi
+    else
+        meson setup build
+    fi
+    
+    if [ $? -eq 0 ]; then
+        print_message "Build configured successfully!"
+    else
+        print_error "Meson configuration failed!"
+        exit 1
+    fi
+}
+
+# Function to compile project
+compile_project() {
+    if [ ! -d "build" ]; then
+        print_error "Build directory not found! Run 'Build (meson setup)' first."
+        return
+    fi
+    
+    print_message "Compiling project..."
+    meson compile -C build
+    if [ $? -eq 0 ]; then
+        print_message "Compilation successful!"
+    else
+        print_error "Compilation failed!"
+        exit 1
+    fi
+}
+
+# Function to install project
+install_project() {
+    if [ ! -d "build" ]; then
+        print_error "Build directory not found! Run 'Build (meson setup)' first."
+        return
+    fi
+    
+    print_message "Installing project to system..."
+    sudo ninja -C build install
+    if [ $? -eq 0 ]; then
+        print_message "Installation successful!"
+    else
+        print_error "Installation failed!"
+        exit 1
+    fi
+}
+
+# Function to build .deb package
 build_deb() {
-    print_message "Starting build process..."
+    print_message "Starting .deb package build..."
     
     # Check if build directory exists, if not configure it
     if [ ! -d "build" ]; then
@@ -142,7 +201,7 @@ build_deb() {
     fi
     
     # Rename .deb file with version
-    local version=$(grep '"version"' build/meson-info/intro-projectinfo.json 2>/dev/null | sed 's/.*: *"\(.*\)".*/\1/' || echo "1.3.0")
+    local version=$(grep '"version"' build/meson-info/intro-projectinfo.json 2>/dev/null | sed 's/.*: *"\(.*\)".*/\1/' || echo "1.4.0")
     local deb_file="clipboard-history_${version}_amd64.deb"
     mv deb-package.deb "$deb_file"
     
@@ -157,15 +216,20 @@ build_deb() {
 
 # Main menu
 show_menu() {
-    echo "====================================="
-    echo "  Package Installation/Uninstallation Script"
-    echo "====================================="
-    echo "1. Install packages"
-    echo "2. Uninstall packages"
-    echo "3. Check package status"
-    echo "4. Build .deb package"
-    echo "5. Exit"
-    echo "====================================="
+    echo "========================================"
+    echo "  Clipboard History - Dev Tools"
+    echo "========================================"
+    echo " 1. Install packages"
+    echo " 2. Uninstall packages"
+    echo " 3. Check package status"
+    echo "----------------------------------------"
+    echo " 4. Build (meson setup)"
+    echo " 5. Compile (meson compile)"
+    echo " 6. Install (sudo ninja install)"
+    echo "----------------------------------------"
+    echo " 7. Build .deb package"
+    echo " 8. Exit"
+    echo "========================================"
 }
 
 # Main script
@@ -179,7 +243,7 @@ main() {
     
     while true; do
         show_menu
-        read -p "Select option (1-5): " choice
+        read -p "Select option (1-8): " choice
         
         case $choice in
             1)
@@ -192,9 +256,18 @@ main() {
                 check_status
                 ;;
             4)
-                build_deb
+                build_project
                 ;;
             5)
+                compile_project
+                ;;
+            6)
+                install_project
+                ;;
+            7)
+                build_deb
+                ;;
+            8)
                 print_message "Thank you, exiting script..."
                 exit 0
                 ;;

@@ -114,9 +114,11 @@ clipboard-history-elementaryos
  ├── src
  │   ├── main.vala
  │   ├── window.vala
- │   └── clipboard-manager.vala
+ │   └── clipboard-history.vala
  │
  ├── data
+ │   ├── clipboard-history.desktop
+ │   ├── clipboard-history-autostart.desktop
  │   └── icons
  │       └── hicolor
  │           └── 128x128
@@ -124,8 +126,11 @@ clipboard-history-elementaryos
  │                   └── clipboard-history.png
  │
  ├── assets
- │   └── clipboard-history.png
+ │   └── screenshot-dark.png
+ │   └── screenshot-light.png
  │
+ ├── deb-package
+ ├── build
  └── README.md
 ```
 
@@ -156,4 +161,4 @@ Possible improvements for future versions:
 
 ## License
 
-MIT License
+GNU General Public License v3.0

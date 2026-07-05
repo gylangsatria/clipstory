@@ -32,23 +32,14 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         this.manager = manager;
         
-        // Cara modern untuk GTK 3.22+ - gunakan set_role dan set_wmclass (masih diperlukan)
-        #if !GTK_3_22
-            this.set_wmclass("clipboard-history", "ClipboardHistory");
-        #else
-            // Untuk GTK 3.22+, set_wmclass masih berfungsi meskipun deprecated
-            this.set_wmclass("clipboard-history", "ClipboardHistory");
-        #endif
-        
-        // Set role untuk identifikasi
+        // Set role & wmclass untuk identifikasi window
+        // set_wmclass sudah deprecated sejak GTK 3.22 tapi masih diperlukan
+        // untuk beberapa window manager
+        this.set_wmclass("clipboard-history", "ClipboardHistory");
         this.set_role("clipboard-history-main");
         
         // Set icon name yang sama dengan desktop entry
-        try {
-            this.set_icon_name("clipboard-history");
-        } catch (Error e) {
-            warning("Failed to set icon: %s", e.message);
-        }
+        this.set_icon_name("clipboard-history");
         
         // Pastikan window tidak di-skip oleh window manager
         this.set_skip_taskbar_hint(false);
@@ -58,11 +49,14 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         // Inisialisasi CSS provider untuk dark mode
         css_provider = new Gtk.CssProvider();
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            css_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
+        var screen = Gdk.Screen.get_default();
+        if (screen != null) {
+            Gtk.StyleContext.add_provider_for_screen(
+                screen,
+                css_provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            );
+        }
         
         var header = new Gtk.HeaderBar();
         header.show_close_button = true;
@@ -209,7 +203,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         version_label = new Gtk.Label("");
         version_label.get_style_context().add_class("dim-label");
-        version_label.set_markup("<small>Clipboard History v1.3.0</small>");
+        version_label.set_markup("<small>Clipboard History v1.4.0</small>");
         
         // Tambahkan link ke repository atau info
         var about_button = new Gtk.Button.with_label("ℹ️");
@@ -245,11 +239,6 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         // Initial population of the list
         refresh_list();
-        
-        this.show_all();
-        
-        // Pastikan window mendapatkan fokus saat dibuka
-        this.present();
     }
     
     // Cek apakah file autostart memiliki Hidden=true
@@ -341,7 +330,7 @@ X-GNOME-Autostart-enabled=false
         var about = new Gtk.AboutDialog();
         about.set_transient_for(this);
         about.set_program_name("Clipboard History");
-        about.set_version("1.3.0");
+        about.set_version("1.4.0");
         about.set_comments("Clipboard history for elementary OS");
         about.set_copyright("© 2026 Gylang Satria");
         about.set_license_type(Gtk.License.GPL_3_0);
@@ -349,11 +338,7 @@ X-GNOME-Autostart-enabled=false
         about.set_website_label("GitHub Repository");
         about.set_authors({"Gylang Satria <sayugiteam@gmail.com>"});
         
-        try {
-            about.set_logo_icon_name("clipboard-history");
-        } catch (Error e) {
-            warning("Failed to set about dialog logo: %s", e.message);
-        }
+        about.set_logo_icon_name("clipboard-history");
         
         about.run();
         about.destroy();
@@ -520,9 +505,11 @@ void apply_dark_mode(bool dark) {
         int start_index = current_offset;
         int end_index = int.min(start_index + visible_items, total_items);
         
-        // Update info label
-        if (total_items > 0) {
+        // Update info label — pastikan range valid
+        if (total_items > 0 && start_index < total_items) {
             info_label.label = "Showing %d-%d of %d items".printf(start_index + 1, end_index, total_items);
+        } else if (total_items > 0) {
+            info_label.label = "Showing 1-%d of %d items".printf(total_items, total_items);
         } else {
             info_label.label = "No items found";
         }

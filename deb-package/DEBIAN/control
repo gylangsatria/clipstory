@@ -1,9 +1,9 @@
 Package: clipboard-history
-Version: 1.3.0
+Version: 1.4.0
 Section: utils
 Priority: optional
 Architecture: amd64
 Maintainer: gylangsatria
-Depends: libgtk-3-0, libgranite6, libgee-0.8-2
+Depends: libgtk-3-0, libgranite6, libgee-0.8-2, libjson-glib-1.0-0
 Description: clipboard history for elementary OS
  A clipboard manager with history feature for elementary OS.

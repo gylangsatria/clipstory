@@ -23,10 +23,14 @@ public class ClipboardHistory : Object {
 
     public signal void history_changed();
 
+    private uint poll_timer_id = 0;
+    private uint save_debounce_id = 0;
+
     public ClipboardHistory () {
 
         clipboard = Clipboard.get(Gdk.SELECTION_CLIPBOARD);
 
+        // Signal owner_change — tidak selalu reliabel (terutama Wayland & Electron)
         clipboard.owner_change.connect(() => {
             check_clipboard_async();
         });
@@ -43,10 +47,35 @@ public class ClipboardHistory : Object {
         // Muat history dari file
         load_history();
 
-        // Simpan history setiap ada perubahan
+        // Simpan history — pakai debounce supaya tidak nulis file tiap 400ms
         this.history_changed.connect(() => {
-            save_history();
+            if (save_debounce_id > 0) {
+                GLib.Source.remove(save_debounce_id);
+            }
+            save_debounce_id = GLib.Timeout.add(500, () => {
+                save_history();
+                save_debounce_id = 0;
+                return false;
+            });
         });
+
+        // Polling fallback: cek clipboard tiap 400ms
+        // Banyak aplikasi tidak memicu owner_change, jadi polling diperlukan
+        poll_timer_id = GLib.Timeout.add(400, () => {
+            check_clipboard_async();
+            return GLib.Source.CONTINUE;
+        });
+    }
+
+    ~ClipboardHistory() {
+        if (poll_timer_id > 0) {
+            GLib.Source.remove(poll_timer_id);
+            poll_timer_id = 0;
+        }
+        if (save_debounce_id > 0) {
+            GLib.Source.remove(save_debounce_id);
+            save_debounce_id = 0;
+        }
     }
 
     void check_clipboard_async() {

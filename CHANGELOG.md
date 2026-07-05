@@ -1,5 +1,33 @@
 # Changelog / Code Review
 
+## Version 1.4.0
+
+### New Features
+- Clipboard monitoring now keeps running even when window is closed (hide-on-delete)
+- Re-open window by running `clipboard-history` again while app is running in background
+- Debounced JSON persistence (500ms debounce — reduces disk writes)
+- **Ctrl+Q** shortcut to quit application completely
+- Dev script: add separate menu options for Build (meson setup), Compile (meson compile), and Install (sudo ninja install)
+- Ignore generated files in `deb-package/usr/bin/`, `usr/share/`, `etc/` via `.gitignore`
+
+### Bug Fixes
+- Fix clipboard not detected from some apps (Electron, Chromium, Wayland) by adding polling fallback (400ms)
+- Fix app exiting completely when window is closed (monitoring stops)
+- Fix `save_history()` writing to disk on every clipboard change (now debounced with 500ms debounce timer)
+- Fix redundant `#if !GTK_3_22` dead code (both branches were identical)
+- Fix duplicate `show_all()` call in constructor
+- Fix license mismatch (README said MIT, About dialog used GPL-3.0)
+- Fix missing `libjson-glib-1.0-0` dependency in deb package control file
+- Fix `Gdk.Screen.get_default()` could return `null` on Wayland (add null check in `apply_dark_mode`)
+- Fix `.gitignore` trailing slash on `deb-package.deb` pattern (file, not directory)
+- Fix `dev-setup.sh` uninstall missing `libjson-glib-dev`
+- Fix `info_label` showing invalid range when offset exceeds total items
+- Fix unreachable `try-catch` clauses on `set_icon_name()` and `set_logo_icon_name()`
+- Fix tracked compiled binary `deb-package/usr/bin/clipboard-history` (removed from git tracking)
+- Update README project structure to match actual files
+
+---
+
 ## Version 1.3.0
 
 ### New Features

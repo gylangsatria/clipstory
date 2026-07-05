@@ -1,4 +1,4 @@
-project('clipboard-history', 'vala', version: '1.3.0')
+project('clipboard-history', 'vala', version: '1.4.0')
 
 gtk = dependency('gtk+-3.0')
 granite = dependency('granite')
