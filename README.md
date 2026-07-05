@@ -84,6 +84,41 @@ sudo ninja install
 sudo ninja -C build uninstall
 ```
 
+### Quick Dev Setup (dev-setup.sh)
+
+The project includes a helper script `dev-setup.sh` with an interactive menu for common development tasks:
+
+```bash
+./dev-setup.sh
+```
+
+Menu options:
+```
+========================================
+  Clipboard History - Dev Tools
+========================================
+ 1. Install packages         — Install all dev dependencies
+ 2. Uninstall packages       — Remove dev dependencies
+ 3. Check package status     — Check which packages are installed
+----------------------------------------
+ 4. Build (meson setup)      — Configure the build directory
+ 5. Compile (meson compile)  — Compile the project
+ 6. Install (sudo ninja)     — Install to system
+----------------------------------------
+ 7. Build .deb package       — Create a .deb package
+ 8. Exit
+========================================
+```
+
+Typical workflow after cloning:
+```bash
+./dev-setup.sh    # Select: 1 → 4 → 5 → 6
+```
+Or for a quick .deb build:
+```bash
+./dev-setup.sh    # Select: 7
+```
+
 ### Build .deb File
 
 1. Compile project:
