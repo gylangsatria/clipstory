@@ -1,5 +1,5 @@
 Package: clipboard-history
-Version: 1.4.0
+Version: 1.4.1
 Section: utils
 Priority: optional
 Architecture: amd64

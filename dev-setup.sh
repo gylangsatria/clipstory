@@ -201,7 +201,7 @@ build_deb() {
     fi
     
     # Rename .deb file with version
-    local version=$(grep '"version"' build/meson-info/intro-projectinfo.json 2>/dev/null | sed 's/.*: *"\(.*\)".*/\1/' || echo "1.4.0")
+    local version=$(grep '"version"' build/meson-info/intro-projectinfo.json 2>/dev/null | sed 's/.*: *"\(.*\)".*/\1/' || echo "1.4.1")
     local deb_file="clipboard-history_${version}_amd64.deb"
     mv deb-package.deb "$deb_file"
     

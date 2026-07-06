@@ -203,7 +203,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         version_label = new Gtk.Label("");
         version_label.get_style_context().add_class("dim-label");
-        version_label.set_markup("<small>Clipboard History v1.4.0</small>");
+        version_label.set_markup("<small>Clipboard History v1.4.1</small>");
         
         // Tambahkan link ke repository atau info
         var about_button = new Gtk.Button.with_label("ℹ️");
@@ -330,7 +330,7 @@ X-GNOME-Autostart-enabled=false
         var about = new Gtk.AboutDialog();
         about.set_transient_for(this);
         about.set_program_name("Clipboard History");
-        about.set_version("1.4.0");
+        about.set_version("1.4.1");
         about.set_comments("Clipboard history for elementary OS");
         about.set_copyright("© 2026 Gylang Satria");
         about.set_license_type(Gtk.License.GPL_3_0);
@@ -565,8 +565,26 @@ void apply_dark_mode(bool dark) {
             }
             
             // Tombol dengan ukuran tetap
-            var button_container = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+            var button_container = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 2);
             button_container.halign = Align.END;
+
+            // Pin button — pakai emoji pin agar kompatibel semua tema
+            bool item_pinned = manager.is_pinned(full_text);
+            var pin_button = new Gtk.Button.with_label("📌");
+            pin_button.width_request = 28;
+            pin_button.height_request = 28;
+            pin_button.tooltip_text = item_pinned ? "Unpin" : "Pin this item";
+            pin_button.relief = ReliefStyle.NONE;
+            
+            // Set opacity untuk visual pin/unpin
+            pin_button.opacity = item_pinned ? 1.0 : 0.4;
+            
+            pin_button.clicked.connect(() => {
+                manager.toggle_pin(full_text);
+                bool now_pinned = manager.is_pinned(full_text);
+                pin_button.tooltip_text = now_pinned ? "Unpin" : "Pin this item";
+                pin_button.opacity = now_pinned ? 1.0 : 0.4;
+            });
             
             var copy_button = new Gtk.Button.with_label("Copy");
             copy_button.width_request = 65;
@@ -594,6 +612,7 @@ void apply_dark_mode(bool dark) {
                 refresh_list();
             });
             
+            button_container.pack_start(pin_button, false, false, 0);
             button_container.pack_start(copy_button, false, false, 0);
             button_container.pack_start(delete_button, false, false, 0);
             

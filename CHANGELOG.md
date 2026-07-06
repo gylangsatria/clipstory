@@ -1,5 +1,20 @@
 # Changelog / Code Review
 
+## Version 1.4.1
+
+### New Features
+- Pin/unpin clipboard items — pinned items are protected from Clear All and auto-trim
+- Pin button (📌) on each history item row
+- Pinned state persists in JSON format (`{"text": "...", "pinned": true/false}`)
+- Auto-migration from legacy JSON format (array of strings)
+
+### Bug Fixes
+- `clear_all()` now only removes non-pinned items
+- `max_items` trim skips pinned items
+- Remove pin automatically when item is deleted
+
+---
+
 ## Version 1.4.0
 
 ### New Features

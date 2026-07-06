@@ -4,6 +4,7 @@ using Gee;
 public class ClipboardHistory : Object {
 
     public ArrayList<string> history = new ArrayList<string>();
+    private HashSet<string> pinned = new HashSet<string>();
     private Clipboard clipboard;
     private string last_text = "";
     private int _max_items = 50;
@@ -13,10 +14,7 @@ public class ClipboardHistory : Object {
         get { return _max_items; }
         set {
             _max_items = value;
-            // Trim history jika melebihi batas baru
-            while (history.size > _max_items) {
-                history.remove_at(history.size - 1);
-            }
+            trim_history();
             history_changed();
         }
     }
@@ -96,13 +94,26 @@ public class ClipboardHistory : Object {
             history.remove(cleaned_text);
             history.insert(0, cleaned_text);
 
-            // limit history
-            if (history.size > max_items) {
-                history.remove_at(history.size - 1);
-            }
+            trim_history();
 
             history_changed();
         });
+    }
+
+    // Hapus item non-pinned paling tua jika melebihi batas
+    private void trim_history() {
+        while (history.size > _max_items) {
+            // Cari dari belakang — jangan hapus item yang di-pin
+            bool removed = false;
+            for (int i = history.size - 1; i >= 0; i--) {
+                if (!pinned.contains(history.@get(i))) {
+                    history.remove_at(i);
+                    removed = true;
+                    break;
+                }
+            }
+            if (!removed) break; // Semua item di-pin, stop
+        }
     }
 
     public void copy_again(string text) {
@@ -111,6 +122,20 @@ public class ClipboardHistory : Object {
         last_text = text;
         clipboard.set_text(text, -1);
         clipboard.store(); 
+    }
+
+    // Pin / unpin item
+    public bool is_pinned(string text) {
+        return pinned.contains(text);
+    }
+
+    public void toggle_pin(string text) {
+        if (pinned.contains(text)) {
+            pinned.remove(text);
+        } else {
+            pinned.add(text);
+        }
+        history_changed();
     }
 
     public ArrayList<string> search(string query) {
@@ -129,15 +154,22 @@ public class ClipboardHistory : Object {
 
     // hapus item tertentu
     public void remove_item(string text) {
-
+        pinned.remove(text); // Lepas pin juga
         history.remove(text);
         history_changed();
     }
 
-    // hapus semua history
+    // hapus semua history (kecuali yang di-pin)
     public void clear_all() {
-
-        history.clear();
+        var to_remove = new ArrayList<string>();
+        foreach (var item in history) {
+            if (!pinned.contains(item)) {
+                to_remove.add(item);
+            }
+        }
+        foreach (var item in to_remove) {
+            history.remove(item);
+        }
         history_changed();
     }
 
@@ -147,7 +179,12 @@ public class ClipboardHistory : Object {
             var builder = new Json.Builder();
             builder.begin_array();
             foreach (var item in history) {
-                builder.add_string_value(item);
+                builder.begin_object();
+                    builder.set_member_name("text");
+                    builder.add_string_value(item);
+                    builder.set_member_name("pinned");
+                    builder.add_boolean_value(pinned.contains(item));
+                builder.end_object();
             }
             builder.end_array();
 
@@ -171,9 +208,23 @@ public class ClipboardHistory : Object {
 
             var arr = root.get_array();
             for (int i = 0; i < arr.get_length(); i++) {
-                var item = arr.get_string_element(i);
-                if (item != null) {
-                    history.add(item);
+                var node = arr.get_element(i);
+                if (node.get_node_type() == Json.NodeType.OBJECT) {
+                    // Format baru: {"text": "...", "pinned": true/false}
+                    var obj = node.get_object();
+                    var text = obj.get_string_member("text");
+                    if (text != null) {
+                        history.add(text);
+                        if (obj.get_boolean_member("pinned")) {
+                            pinned.add(text);
+                        }
+                    }
+                } else {
+                    // Format lama (array of strings) — migrasi otomatis
+                    var item = arr.get_string_element(i);
+                    if (item != null) {
+                        history.add(item);
+                    }
                 }
             }
         } catch (Error e) {
