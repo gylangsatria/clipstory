@@ -7,6 +7,7 @@
 - Pin button (📌) on each history item row
 - Pinned state persists in JSON format (`{"text": "...", "pinned": true/false}`)
 - Auto-migration from legacy JSON format (array of strings)
+- **Double-click** on any history item to automatically copy it to clipboard
 
 ### Bug Fixes
 - `clear_all()` now only removes non-pinned items
