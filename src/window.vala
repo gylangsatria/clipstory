@@ -203,7 +203,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         version_label = new Gtk.Label("");
         version_label.get_style_context().add_class("dim-label");
-        version_label.set_markup("<small>Clipboard History v1.4.1</small>");
+        version_label.set_markup("<small>Clipboard History v1.4.2</small>");
         
         // Tambahkan link ke repository atau info
         var about_button = new Gtk.Button.with_label("ℹ️");
@@ -330,7 +330,7 @@ X-GNOME-Autostart-enabled=false
         var about = new Gtk.AboutDialog();
         about.set_transient_for(this);
         about.set_program_name("Clipboard History");
-        about.set_version("1.4.1");
+        about.set_version("1.4.2");
         about.set_comments("Clipboard history for elementary OS");
         about.set_copyright("© 2026 Gylang Satria");
         about.set_license_type(Gtk.License.GPL_3_0);
@@ -620,21 +620,76 @@ void apply_dark_mode(bool dark) {
             row_box.pack_start(button_container, false, false, 0);
             
             row.add(row_box);
-            
-            // Double-click pada row → auto copy
-            string row_text = full_text;
-            row.activate.connect(() => {
-                manager.copy_again(row_text);
-                // Feedback visual: copy button berkedip "Copied!"
-                copy_button.label = "Copied!";
-                GLib.Timeout.add(1000, () => {
-                    copy_button.label = "Copy";
-                    return false;
-                });
-            });
-            
             list.add(row);
         }
+        
+        // row_activated: double-click atau Enter → copy item
+        list.row_activated.connect((row) => {
+            int idx = row.get_index();
+            int actual_idx = current_offset + idx;
+            
+            var q = search.text;
+            Gee.ArrayList<string> all_items;
+            if (q == "") {
+                all_items = manager.history;
+            } else {
+                all_items = manager.search(q);
+            }
+            
+            if (actual_idx >= 0 && actual_idx < all_items.size) {
+                string text = all_items.@get(actual_idx);
+                manager.copy_again(text);
+                
+                // Cari tombol Copy di row ini dan beri feedback
+                var row_box_w = row.get_child() as Gtk.Box;
+                if (row_box_w != null) {
+                    var children = row_box_w.get_children();
+                    // child terakhir adalah button_container
+                    if (children.length() >= 2) {
+                        var btn_container = children.nth_data(1) as Gtk.Box;
+                        if (btn_container != null) {
+                            var btn_children = btn_container.get_children();
+                            // Cari button dengan label "Copy" (index ke-1 setelah pin)
+                            foreach (Widget w in btn_children) {
+                                var btn = w as Gtk.Button;
+                                if (btn != null && btn.label == "Copy") {
+                                    btn.label = "Copied!";
+                                    GLib.Timeout.add(1000, () => {
+                                        btn.label = "Copy";
+                                        return false;
+                                    });
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Fallback: deteksi double-click langsung di ListBox
+        list.set_activate_on_single_click(false);
+        list.button_press_event.connect((event) => {
+            if (event.type == Gdk.EventType.@2BUTTON_PRESS && event.button == 1) {
+                var row = list.get_row_at_y((int)event.y);
+                if (row != null) {
+                    int idx = row.get_index();
+                    int actual_idx = current_offset + idx;
+                    var q = search.text;
+                    Gee.ArrayList<string> all_items;
+                    if (q == "") {
+                        all_items = manager.history;
+                    } else {
+                        all_items = manager.search(q);
+                    }
+                    if (actual_idx >= 0 && actual_idx < all_items.size) {
+                        manager.copy_again(all_items.@get(actual_idx));
+                    }
+                    return true;
+                }
+            }
+            return false;
+        });
         
         // Update status tombol show more/less
         show_less_button.sensitive = (current_offset > 0);
