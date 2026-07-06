@@ -620,6 +620,19 @@ void apply_dark_mode(bool dark) {
             row_box.pack_start(button_container, false, false, 0);
             
             row.add(row_box);
+            
+            // Double-click pada row → auto copy
+            string row_text = full_text;
+            row.activate.connect(() => {
+                manager.copy_again(row_text);
+                // Feedback visual: copy button berkedip "Copied!"
+                copy_button.label = "Copied!";
+                GLib.Timeout.add(1000, () => {
+                    copy_button.label = "Copy";
+                    return false;
+                });
+            });
+            
             list.add(row);
         }
         
