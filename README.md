@@ -192,7 +192,7 @@ Possible improvements for future versions:
 * Image clipboard support
 * Persistent history using SQLite
 * Global keyboard shortcuts
-* Pinned clipboard items
+* Pinned clipboard items [Added in 0d5c60e]
 
 ## License
 
