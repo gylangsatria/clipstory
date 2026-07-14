@@ -1,86 +1,71 @@
 # Clipboard History for elementary OS
 
-A lightweight clipboard history manager built for Linux desktops using GTK and Granite.
+[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.gylangsatria.clipboard-history)
+
+A lightweight clipboard history manager built for elementary OS using GTK and Granite.
 This application automatically stores copied text and allows you to quickly search, reuse, and manage clipboard items.
 
 Designed to integrate well with elementary OS style and workflows.
 
 ## Features
 
-* Automatic clipboard monitoring
-* Clipboard history list
-* Search clipboard history
-* Copy previous clipboard items with one click
-* Delete individual history items
-* Clear all clipboard history
-* Automatic history limit (old items are removed automatically)
-* Simple and clean GTK interface
+* Automatic clipboard monitoring (X11 & Wayland)
+* Searchable clipboard history
+* Copy previous clipboard items with one click or double-click
+* Pin important items to protect them from deletion
+* Dark mode support
+* Configurable history limit
+* Auto-start at login option
+* Clean and intuitive Granite interface
 
-## Screenshot
+## Screenshots
 
-![Screenshot App](assets/screenshot-dark.png)
+![Screenshot Dark](assets/screenshot-dark.png)
 
-![Screenshot App](assets/screenshot-light.png)
+![Screenshot Light](assets/screenshot-light.png)
 
-## Requirements
+## Installation
+
+### AppCenter (Recommended)
+
+Coming soon to elementary OS AppCenter!
+
+### Flatpak
+
+```bash
+flatpak install com.github.gylangsatria.clipboard-history
+```
+
+### Build from source
+
+#### Requirements
 
 * GTK 3
 * Granite
 * Gee (collections library)
 * JSON-GLib
 * Vala compiler
+* Meson & Ninja
 
 Install dependencies on Ubuntu / elementary OS:
 
 ```bash
-sudo apt install valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-dev
+sudo apt install valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-dev meson ninja-build
 ```
 
-## Build
-
-Clone the repository and compile the project using `valac`.
+#### Build & Install
 
 ```bash
 git clone https://github.com/gylangsatria/clipboard-history-elementaryos.git
 cd clipboard-history-elementaryos
-
-valac src/*.vala \
---pkg gtk+-3.0 \
---pkg granite \
---pkg gee-0.8 \
---pkg json-glib-1.0
+meson setup build
+meson compile -C build
+sudo meson install -C build
 ```
 
-## Run
-
-After compiling, run the application:
+#### Uninstall
 
 ```bash
-./main
-or 
-./clipboard-history
-```
-### Install via Ninja
-
-1. Make sure you have meson and ninja installed. 
-```
-sudo apt install meson ninja-build
-```
-
-2. Configure the build directory:
-
-```
-meson build
-```
-
-3. Build and install:
-```
-cd build/
-sudo ninja install
-```
-
-4. For uninstall use this command : 
-```
 sudo ninja -C build uninstall
 ```
 
@@ -114,32 +99,14 @@ Typical workflow after cloning:
 ```bash
 ./dev-setup.sh    # Select: 1 → 4 → 5 → 6
 ```
-Or for a quick .deb build:
+
+### Build .deb Package
+
 ```bash
-./dev-setup.sh    # Select: 7
-```
-
-### Build .deb File
-
-1. Compile project:
-
-```
+meson setup build
 meson compile -C build
-```
-
-2. Install to staging directory:
-```
-DESTDIR=$PWD/deb-package/ meson install -C build
-```
-
-3. Build package .deb:
-```
+DESTDIR=$PWD/deb-package meson install -C build
 dpkg-deb --build deb-package/
-```
-
-4. Rename .deb: 
-```
-mv deb-package.deb clipboard-history_1.1_amd64.deb
 ```
 
 ## Project Structure
@@ -152,18 +119,20 @@ clipboard-history-elementaryos
  │   └── clipboard-history.vala
  │
  ├── data
- │   ├── clipboard-history.desktop
- │   ├── clipboard-history-autostart.desktop
+ │   ├── com.github.gylangsatria.clipboard-history.desktop
+ │   ├── com.github.gylangsatria.clipboard-history-autostart.desktop
+ │   ├── com.github.gylangsatria.clipboard-history.metainfo.xml
  │   └── icons
  │       └── hicolor
  │           └── 128x128
  │               └── apps
- │                   └── clipboard-history.png
+ │                   └── com.github.gylangsatria.clipboard-history.png
  │
  ├── assets
- │   └── screenshot-dark.png
+ │   ├── screenshot-dark.png
  │   └── screenshot-light.png
  │
+ ├── com.github.gylangsatria.clipboard-history.yml
  ├── deb-package
  ├── build
  └── README.md

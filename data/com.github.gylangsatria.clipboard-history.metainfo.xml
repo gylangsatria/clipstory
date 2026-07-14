@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.gylangsatria.clipboard-history</id>
+
+  <name>Clipboard History</name>
+  <summary>A lightweight clipboard history manager for elementary OS</summary>
+
+  <developer id="com.github.gylangsatria">
+    <name>Gylang Satria</name>
+  </developer>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+
+  <description>
+    <p>
+      Clipboard History is a lightweight clipboard manager built for elementary OS.
+      It automatically stores everything you copy and lets you quickly search, reuse,
+      and manage your clipboard history.
+    </p>
+    <ul>
+      <li>Automatic clipboard monitoring — never lose a copied item again</li>
+      <li>Search through your clipboard history instantly</li>
+      <li>Pin important items so they never get deleted</li>
+      <li>Dark mode support</li>
+      <li>Configurable history limit</li>
+      <li>Auto-start at login option</li>
+      <li>Clean and intuitive Granite interface</li>
+    </ul>
+  </description>
+
+  <categories>
+    <category>Utility</category>
+  </categories>
+
+  <keywords>
+    <keyword>clipboard</keyword>
+    <keyword>history</keyword>
+    <keyword>paste</keyword>
+    <keyword>copy</keyword>
+    <keyword>manager</keyword>
+  </keywords>
+
+  <url type="homepage">https://github.com/gylangsatria/clipboard-history-elementaryos</url>
+  <url type="bugtracker">https://github.com/gylangsatria/clipboard-history-elementaryos/issues</url>
+  <url type="donation">https://github.com/sponsors/gylangsatria</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Clipboard History in dark mode</caption>
+      <image>https://raw.githubusercontent.com/gylangsatria/clipboard-history-elementaryos/main/assets/screenshot-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Clipboard History in light mode</caption>
+      <image>https://raw.githubusercontent.com/gylangsatria/clipboard-history-elementaryos/main/assets/screenshot-light.png</image>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="1.4.5" date="2026-07-14">
+      <description>
+        <p>AppCenter readiness: new Application ID, Flatpak manifest, AppStream metainfo, and file restructuring.</p>
+      </description>
+    </release>
+    <release version="1.4.4" date="2026-07-14">
+      <description>
+        <p>GitHub screenshot previews and README improvements.</p>
+      </description>
+    </release>
+    <release version="1.4.3" date="2026-07-14">
+      <description>
+        <p>Wayland clipboard support with polling fallback, memory leak fixes, and improved stability.</p>
+      </description>
+    </release>
+    <release version="1.4.2" date="2026-07-01">
+      <description>
+        <p>Double-click to copy items. Minor UI improvements.</p>
+      </description>
+    </release>
+    <release version="1.4.1" date="2026-06-20">
+      <description>
+        <p>Pin/unpin items, pin persistence, auto-migration from legacy format.</p>
+      </description>
+    </release>
+    <release version="1.4.0" date="2026-06-10">
+      <description>
+        <p>Background monitoring, debounced persistence, Ctrl+Q shortcut, various bug fixes.</p>
+      </description>
+    </release>
+    <release version="1.3.0" date="2026-05-20">
+      <description>
+        <p>Configurable history limit, JSON persistence, dark mode toggle, autostart toggle.</p>
+      </description>
+    </release>
+  </releases>
+
+  <content_rating type="oars-1.1" />
+
+  <launchable type="desktop-id">com.github.gylangsatria.clipboard-history.desktop</launchable>
+
+  <translation type="gettext">clipboard-history</translation>
+
+  <custom>
+    <value key="Purism::form_factor">workstation</value>
+    <value key="Purism::form_factor">mobile</value>
+  </custom>
+</component>

@@ -6,7 +6,7 @@ public class ClipboardApp : Gtk.Application {
     MainWindow? window = null;
 
     public ClipboardApp() {
-        Object(application_id: "com.example.clipboardhistory");
+        Object(application_id: "com.github.gylangsatria.clipboard-history");
     }
 
     protected override void startup() {

@@ -1,5 +1,22 @@
 # Changelog / Code Review
 
+## Version 1.4.5
+
+### AppCenter Readiness
+- **Application ID baru**: `com.example.clipboardhistory` → `com.github.gylangsatria.clipboard-history` (standar AppCenter)
+- **AppStream metainfo**: File `com.github.gylangsatria.clipboard-history.metainfo.xml` dengan screenshot, deskripsi, rilis, kategori
+- **Flatpak manifest**: `com.github.gylangsatria.clipboard-history.yml` dengan runtime `io.elementary.Platform` 7
+- **Ikon & desktop entry**: Semua file di-rename sesuai Application ID baru
+- **Meson build**: Executable, install_data, dan metainfo semuanya menggunakan Application ID baru
+- **README**: Badge AppCenter, instruksi Flatpak, struktur direktori diperbarui
+- **Deb package**: Binary, control, dan file-file di dalamnya di-update
+
+## Version 1.4.4
+
+### Improvements
+- **Screenshot untuk GitHub**: Menambahkan `assets/screenshot-dark.png` dan `assets/screenshot-light.png` yang di-link dari README agar muncul di GitHub social preview
+- **README badges**: Menambahkan AppCenter badge untuk persiapan submission
+
 ## Version 1.4.3
 
 ### Bug Fixes

@@ -1,0 +1,27 @@
+id: com.github.gylangsatria.clipboard-history
+runtime: io.elementary.Platform
+runtime-version: '7'
+sdk: io.elementary.Sdk
+command: com.github.gylangsatria.clipboard-history
+
+finish-args:
+  # X11 + Wayland windowing
+  - --socket=x11
+  - --socket=wayland
+  # Clipboard access (both selections)
+  - --socket=session-bus
+  # Notification access
+  - --talk-name=org.freedesktop.Notifications
+  # Settings
+  - --talk-name=org.gtk.Settings
+  # File access for history persistence
+  - --filesystem=xdg-data/clipboard-history
+
+modules:
+  - name: clipboard-history
+    buildsystem: meson
+    config-opts:
+      - -Dprefix=/app
+    sources:
+      - type: dir
+        path: .

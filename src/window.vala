@@ -203,7 +203,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         version_label = new Gtk.Label("");
         version_label.get_style_context().add_class("dim-label");
-        version_label.set_markup("<small>Clipboard History v1.4.3</small>");
+        version_label.set_markup("<small>Clipboard History v1.4.5</small>");
         
         // Tambahkan link ke repository atau info
         var about_button = new Gtk.Button.with_label("ℹ️");
@@ -263,9 +263,9 @@ public class MainWindow : Gtk.ApplicationWindow {
     bool is_autostart_enabled() {
         string user_file = Path.build_filename(
             Environment.get_user_config_dir(), "autostart",
-            "clipboard-history-autostart.desktop"
+            "com.github.gylangsatria.clipboard-history-autostart.desktop"
         );
-        string system_file = "/etc/xdg/autostart/clipboard-history-autostart.desktop";
+        string system_file = "/etc/xdg/autostart/com.github.gylangsatria.clipboard-history-autostart.desktop";
         
         // Jika user override file exists:
         if (FileUtils.test(user_file, FileTest.EXISTS)) {
@@ -287,7 +287,7 @@ public class MainWindow : Gtk.ApplicationWindow {
             Environment.get_user_config_dir(), "autostart"
         );
         string autostart_file = Path.build_filename(
-            autostart_dir, "clipboard-history-autostart.desktop"
+            autostart_dir, "com.github.gylangsatria.clipboard-history-autostart.desktop"
         );
         
         // Buat direktori autostart jika belum ada
@@ -298,11 +298,11 @@ public class MainWindow : Gtk.ApplicationWindow {
             string desktop_content = """[Desktop Entry]
 Name=Clipboard History
 Comment=Start clipboard history manager at login
-Exec=clipboard-history
-Icon=clipboard-history
+Exec=com.github.gylangsatria.clipboard-history
+Icon=com.github.gylangsatria.clipboard-history
 Terminal=false
 Type=Application
-Categories=Utility;GTK;X-GNOME-Utilities;
+Categories=Utility;GTK;
 X-GNOME-Autostart-enabled=true
 X-GNOME-Autostart-Delay=10
 """;
@@ -317,8 +317,8 @@ X-GNOME-Autostart-Delay=10
             string desktop_content = """[Desktop Entry]
 Name=Clipboard History
 Comment=Start clipboard history manager at login
-Exec=clipboard-history
-Icon=clipboard-history
+Exec=com.github.gylangsatria.clipboard-history
+Icon=com.github.gylangsatria.clipboard-history
 Terminal=false
 Type=Application
 Categories=Utility;GTK;X-GNOME-Utilities;
@@ -337,7 +337,7 @@ X-GNOME-Autostart-enabled=false
         var about = new Gtk.AboutDialog();
         about.set_transient_for(this);
         about.set_program_name("Clipboard History");
-        about.set_version("1.4.3");
+        about.set_version("1.4.5");
         about.set_comments("Clipboard history for elementary OS");
         about.set_copyright("© 2026 Gylang Satria");
         about.set_license_type(Gtk.License.GPL_3_0);
