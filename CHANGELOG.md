@@ -1,5 +1,18 @@
 # Changelog / Code Review
 
+## Version 1.4.3
+
+### Bug Fixes
+- **Wayland clipboard support**: Deteksi `XDG_SESSION_TYPE=wayland` untuk mengaktifkan polling mode yang ditingkatkan. Di Wayland, `owner_change` tidak tersedia, jadi clipboard di-poll dengan retry bertahap (0ms → 100ms → 300ms) untuk mengatasi race condition clipboard protocol.
+- **Memory leak di refresh_list()**: Widget child sekarang di-`destroy()` setelah di-`remove()` dari ListBox. Signal `row_activated` dan `button_press_event` dipindahkan ke constructor sehingga hanya di-connect sekali, bukan setiap kali list di-refresh.
+- **Residual timer cleanup**: Destructor sekarang juga membersihkan `wayland_delay_id` jika ada.
+
+### Technical
+- Restrukturasi `check_clipboard_async()` menjadi tiga method: `check_clipboard_wayland()` (dengan retry bertahap), `check_clipboard_text()` (X11 direct), dan `process_clipboard_text()` (shared logic).
+- Handler events (`on_row_activated`, `on_list_button_press`) dipisah menjadi method dedicated untuk menghindari pembuatan lambda baru setiap refresh.
+
+---
+
 ## Version 1.4.2
 
 ### Improvements

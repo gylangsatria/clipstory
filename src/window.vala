@@ -203,7 +203,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         version_label = new Gtk.Label("");
         version_label.get_style_context().add_class("dim-label");
-        version_label.set_markup("<small>Clipboard History v1.4.2</small>");
+        version_label.set_markup("<small>Clipboard History v1.4.3</small>");
         
         // Tambahkan link ke repository atau info
         var about_button = new Gtk.Button.with_label("ℹ️");
@@ -236,6 +236,13 @@ public class MainWindow : Gtk.ApplicationWindow {
             current_offset = 0;
             refresh_list();
         });
+        
+        // Double-click via row_activated, bukan single-click
+        list.set_activate_on_single_click(false);
+        
+        // Signal untuk row_activated — connect sekali di sini, bukan di refresh_list
+        list.row_activated.connect(on_row_activated);
+        list.button_press_event.connect(on_list_button_press);
         
         // Initial population of the list
         refresh_list();
@@ -330,7 +337,7 @@ X-GNOME-Autostart-enabled=false
         var about = new Gtk.AboutDialog();
         about.set_transient_for(this);
         about.set_program_name("Clipboard History");
-        about.set_version("1.4.2");
+        about.set_version("1.4.3");
         about.set_comments("Clipboard history for elementary OS");
         about.set_copyright("© 2026 Gylang Satria");
         about.set_license_type(Gtk.License.GPL_3_0);
@@ -485,8 +492,12 @@ void apply_dark_mode(bool dark) {
     
     void refresh_list() {
         
-        foreach (Widget child in list.get_children()) {
+        // Destroy semua child untuk mencegah memory leak
+        // (remove saja tidak cukup — widget tetap di memory)
+        List<weak Widget> children = list.get_children();
+        foreach (Widget child in children) {
             list.remove(child);
+            child.destroy();
         }
         
         var query = search.text;
@@ -623,74 +634,6 @@ void apply_dark_mode(bool dark) {
             list.add(row);
         }
         
-        // row_activated: double-click atau Enter → copy item
-        list.row_activated.connect((row) => {
-            int idx = row.get_index();
-            int actual_idx = current_offset + idx;
-            
-            var q = search.text;
-            Gee.ArrayList<string> all_items;
-            if (q == "") {
-                all_items = manager.history;
-            } else {
-                all_items = manager.search(q);
-            }
-            
-            if (actual_idx >= 0 && actual_idx < all_items.size) {
-                string text = all_items.@get(actual_idx);
-                manager.copy_again(text);
-                
-                // Cari tombol Copy di row ini dan beri feedback
-                var row_box_w = row.get_child() as Gtk.Box;
-                if (row_box_w != null) {
-                    var children = row_box_w.get_children();
-                    // child terakhir adalah button_container
-                    if (children.length() >= 2) {
-                        var btn_container = children.nth_data(1) as Gtk.Box;
-                        if (btn_container != null) {
-                            var btn_children = btn_container.get_children();
-                            // Cari button dengan label "Copy" (index ke-1 setelah pin)
-                            foreach (Widget w in btn_children) {
-                                var btn = w as Gtk.Button;
-                                if (btn != null && btn.label == "Copy") {
-                                    btn.label = "Copied!";
-                                    GLib.Timeout.add(1000, () => {
-                                        btn.label = "Copy";
-                                        return false;
-                                    });
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        
-        // Fallback: deteksi double-click langsung di ListBox
-        list.set_activate_on_single_click(false);
-        list.button_press_event.connect((event) => {
-            if (event.type == Gdk.EventType.@2BUTTON_PRESS && event.button == 1) {
-                var row = list.get_row_at_y((int)event.y);
-                if (row != null) {
-                    int idx = row.get_index();
-                    int actual_idx = current_offset + idx;
-                    var q = search.text;
-                    Gee.ArrayList<string> all_items;
-                    if (q == "") {
-                        all_items = manager.history;
-                    } else {
-                        all_items = manager.search(q);
-                    }
-                    if (actual_idx >= 0 && actual_idx < all_items.size) {
-                        manager.copy_again(all_items.@get(actual_idx));
-                    }
-                    return true;
-                }
-            }
-            return false;
-        });
-        
         // Update status tombol show more/less
         show_less_button.sensitive = (current_offset > 0);
         show_more_button.sensitive = (end_index < total_items);
@@ -699,5 +642,68 @@ void apply_dark_mode(bool dark) {
         button_box.visible = (total_items > visible_items);
         
         list.show_all();
+    }
+    
+    // Handler row_activated — dipanggil via signal (bukan lambda baru tiap refresh)
+    private void on_row_activated(Gtk.ListBoxRow row) {
+        int idx = row.get_index();
+        int actual_idx = current_offset + idx;
+        
+        var q = search.text;
+        Gee.ArrayList<string> all_items;
+        if (q == "") {
+            all_items = manager.history;
+        } else {
+            all_items = manager.search(q);
+        }
+        
+        if (actual_idx >= 0 && actual_idx < all_items.size) {
+            string text = all_items.@get(actual_idx);
+            manager.copy_again(text);
+            
+            // Cari tombol Copy di row ini dan beri feedback
+            var row_box_w = row.get_child() as Gtk.Box;
+            if (row_box_w != null) {
+                var children = row_box_w.get_children();
+                if (children.length() >= 2) {
+                    var btn_container = children.nth_data(1) as Gtk.Box;
+                    if (btn_container != null) {
+                        foreach (Widget w in btn_container.get_children()) {
+                            var btn = w as Gtk.Button;
+                            if (btn != null && btn.label == "Copy") {
+                                btn.label = "Copied!";
+                                GLib.Timeout.add(1000, () => {
+                                    btn.label = "Copy";
+                                    return false;
+                                });
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Handler double-click — connect sekali, bukan tiap refresh
+    private bool on_list_button_press(Gdk.EventButton event) {
+        if (event.type == Gdk.EventType.@2BUTTON_PRESS && event.button == 1) {
+            var row = list.get_row_at_y((int)event.y);
+            if (row != null) {
+                int actual_idx = current_offset + row.get_index();
+                var q = search.text;
+                Gee.ArrayList<string> all_items;
+                if (q == "") {
+                    all_items = manager.history;
+                } else {
+                    all_items = manager.search(q);
+                }
+                if (actual_idx >= 0 && actual_idx < all_items.size) {
+                    manager.copy_again(all_items.@get(actual_idx));
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

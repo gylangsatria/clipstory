@@ -6,6 +6,7 @@ public class ClipboardHistory : Object {
     public ArrayList<string> history = new ArrayList<string>();
     private HashSet<string> pinned = new HashSet<string>();
     private Clipboard clipboard;
+    private Gdk.Display display;
     private string last_text = "";
     private int _max_items = 50;
     private string data_file;
@@ -23,15 +24,28 @@ public class ClipboardHistory : Object {
 
     private uint poll_timer_id = 0;
     private uint save_debounce_id = 0;
+    private uint wayland_delay_id = 0;
+    private bool wayland_detected = false;
 
     public ClipboardHistory () {
 
         clipboard = Clipboard.get(Gdk.SELECTION_CLIPBOARD);
+        display = Gdk.Display.get_default();
 
-        // Signal owner_change — tidak selalu reliabel (terutama Wayland & Electron)
-        clipboard.owner_change.connect(() => {
-            check_clipboard_async();
-        });
+        // Deteksi Wayland — di Wayland owner_change tidak reliabel
+        string? session_type = Environment.get_variable("XDG_SESSION_TYPE");
+        wayland_detected = (session_type != null && session_type.down() == "wayland");
+
+        if (wayland_detected) {
+            // Di Wayland: gunakan pendekatan polling dengan prioritas lebih tinggi
+            // dan penundaan async untuk menghindari race condition clipboard
+            message("Wayland detected: using enhanced polling mode");
+        } else {
+            // X11: owner_change cukup reliable, polling sebagai fallback
+            clipboard.owner_change.connect(() => {
+                check_clipboard_async();
+            });
+        }
 
         // Setup data file path
         string data_dir = Path.build_filename(
@@ -57,8 +71,9 @@ public class ClipboardHistory : Object {
             });
         });
 
-        // Polling fallback: cek clipboard tiap 400ms
-        // Banyak aplikasi tidak memicu owner_change, jadi polling diperlukan
+        // Polling: cek clipboard tiap 400ms
+        // Di Wayland: polling adalah mekanisme utama karena owner_change tidak ada
+        // Di X11: polling sebagai fallback untuk aplikasi yang tidak trigger owner_change
         poll_timer_id = GLib.Timeout.add(400, () => {
             check_clipboard_async();
             return GLib.Source.CONTINUE;
@@ -74,30 +89,67 @@ public class ClipboardHistory : Object {
             GLib.Source.remove(save_debounce_id);
             save_debounce_id = 0;
         }
+        if (wayland_delay_id > 0) {
+            GLib.Source.remove(wayland_delay_id);
+            wayland_delay_id = 0;
+        }
     }
 
     void check_clipboard_async() {
+        // Di Wayland: request_text sering return null pada percobaan pertama
+        // karena clipboard content belum tersedia via protocol selection.
+        // Gunakan pendekatan dengan delay bertahap.
+        if (wayland_detected) {
+            check_clipboard_wayland(0);
+        } else {
+            check_clipboard_text();
+        }
+    }
 
-        clipboard.request_text((clipboard, text) => {
+    // Wayland: coba request dengan retry bertahap (0ms, 100ms, 300ms)
+    private void check_clipboard_wayland(int attempt) {
+        if (attempt > 2) return; // Max 3 attempts
 
-            if (text == null)
+        clipboard.request_text((cb, text) => {
+            if (text == null) {
+                // Retry dengan delay bertahap
+                if (attempt < 2) {
+                    int delay = (attempt == 0) ? 100 : 200;
+                    wayland_delay_id = GLib.Timeout.add(delay, () => {
+                        wayland_delay_id = 0;
+                        check_clipboard_wayland(attempt + 1);
+                        return false;
+                    });
+                }
                 return;
-
-            var cleaned_text = text.strip();
-
-            if (cleaned_text == "" || cleaned_text == last_text)
-                return;
-
-            last_text = cleaned_text;
-
-            // hindari duplikat
-            history.remove(cleaned_text);
-            history.insert(0, cleaned_text);
-
-            trim_history();
-
-            history_changed();
+            }
+            process_clipboard_text(text);
         });
+    }
+
+    // X11: request langsung (X11 punya clipboard synchronously)
+    private void check_clipboard_text() {
+        clipboard.request_text((cb, text) => {
+            if (text == null) return;
+            process_clipboard_text(text);
+        });
+    }
+
+    private void process_clipboard_text(string text) {
+        var cleaned_text = text.strip();
+
+        if (cleaned_text == "" || cleaned_text == last_text)
+            return;
+
+        last_text = cleaned_text;
+
+        // hindari duplikat
+        history.remove(cleaned_text);
+        history.insert(0, cleaned_text);
+
+        trim_history();
+
+        history_changed();
     }
 
     // Hapus item non-pinned paling tua jika melebihi batas
