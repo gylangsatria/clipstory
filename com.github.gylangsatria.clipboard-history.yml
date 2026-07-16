@@ -20,8 +20,6 @@ finish-args:
 modules:
   - name: clipboard-history
     buildsystem: meson
-    config-opts:
-      - -Dprefix=/app
     sources:
       - type: dir
         path: .
