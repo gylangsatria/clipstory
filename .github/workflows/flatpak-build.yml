@@ -1,0 +1,34 @@
+name: Flatpak Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  flatpak:
+    name: Flatpak Builder
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-46
+      options: --privileged
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6.7
+        with:
+          bundle: com.github.gylangsatria.clipboard-history.flatpak
+          manifest-path: com.github.gylangsatria.clipboard-history.yml
+          run-tests: false
+          repository-name: appcenter
+          repository-url: https://flatpak.elementary.io/repo.flatpakrepo
+          branch: stable
+          cache-key: flatpak-builder-${{ github.sha }}
+          build-bundle: true
+          cache: true
+          restore-cache: true
+          upload-artifact: true
