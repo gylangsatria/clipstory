@@ -219,7 +219,7 @@ build_deb() {
 # Main menu
 show_menu() {
     echo "========================================"
-    echo "  Clipboard History - Dev Tools"
+    echo "  ClipStory - Dev Tools"
     echo "========================================"
     echo " 1. Install packages"
     echo " 2. Uninstall packages"
