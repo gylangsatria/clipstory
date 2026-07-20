@@ -283,7 +283,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         about.set_comments("A clipboard history manager");
         about.set_copyright("© 2026 Gylang Satria");
         about.set_license_type(Gtk.License.GPL_3_0);
-        about.set_website("https://github.com/gylangsatria/clipboard-history-elementaryos");
+        about.set_website("https://github.com/gylangsatria/clipstory");
         about.set_website_label("GitHub Repository");
         about.set_authors({"Gylang Satria <sayugiteam@gmail.com>"});
         

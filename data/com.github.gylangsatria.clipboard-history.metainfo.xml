@@ -41,18 +41,18 @@
     <keyword>manager</keyword>
   </keywords>
 
-  <url type="homepage">https://github.com/gylangsatria/clipboard-history-elementaryos</url>
-  <url type="bugtracker">https://github.com/gylangsatria/clipboard-history-elementaryos/issues</url>
+  <url type="homepage">https://github.com/gylangsatria/clipstory</url>
+  <url type="bugtracker">https://github.com/gylangsatria/clipstory/issues</url>
   <url type="donation">https://github.com/sponsors/gylangsatria</url>
 
   <screenshots>
     <screenshot type="default">
       <caption>Clipboard History in dark mode</caption>
-      <image>https://raw.githubusercontent.com/gylangsatria/clipboard-history-elementaryos/main/assets/screenshot-dark.png</image>
+      <image>https://raw.githubusercontent.com/gylangsatria/clipstory/main/assets/screenshot-dark.png</image>
     </screenshot>
     <screenshot>
       <caption>Clipboard History in light mode</caption>
-      <image>https://raw.githubusercontent.com/gylangsatria/clipboard-history-elementaryos/main/assets/screenshot-light.png</image>
+      <image>https://raw.githubusercontent.com/gylangsatria/clipstory/main/assets/screenshot-light.png</image>
     </screenshot>
   </screenshots>
 

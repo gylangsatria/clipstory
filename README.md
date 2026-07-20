@@ -54,8 +54,8 @@ sudo apt install valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-d
 #### Build & Install
 
 ```bash
-git clone https://github.com/gylangsatria/clipboard-history-elementaryos.git
-cd clipboard-history-elementaryos
+git clone https://github.com/gylangsatria/clipstory.git
+cd clipstory
 meson setup build
 meson compile -C build
 sudo meson install -C build
@@ -110,7 +110,7 @@ dpkg-deb --build deb-package/
 ## Project Structure
 
 ```
-clipboard-history-elementaryos
+clipstory
  ├── src
  │   ├── main.vala
  │   ├── window.vala
