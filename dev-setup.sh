@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is used to quickly install and remove development packages (meson, ninja-build, valac, libgtk-3-dev, libgranite-dev, libgee-0.8-dev, libjson-glib-dev) required for GTK/Vala desktop application development on Linux.
+# This script is used to quickly install and remove development packages (meson, ninja-build, valac, libgtk-3-dev, libgranite-dev, libgee-0.8-dev, libjson-glib-dev, libportal-dev, libportal-gtk3-dev) required for GTK/Vala desktop application development on Linux.
 
 # Colors for output
 RED='\033[0;31m'
@@ -32,8 +32,8 @@ install_packages() {
     print_message "Installing meson and ninja-build..."
     sudo apt install -y meson ninja-build
     
-    print_message "Installing valac, libgtk-3-dev, libgranite-dev, libgee-0.8-dev, libjson-glib-dev..."
-    sudo apt install -y valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-dev
+    print_message "Installing valac, libgtk-3-dev, libgranite-dev, libgee-0.8-dev, libjson-glib-dev, libportal-dev, libportal-gtk3-dev..."
+    sudo apt install -y valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-dev libportal-dev libportal-gtk3-dev
     
     # Check installation status
     if [ $? -eq 0 ]; then
@@ -62,6 +62,8 @@ uninstall_packages() {
     echo "  - libgranite-dev"
     echo "  - libgee-0.8-dev"
     echo "  - libjson-glib-dev"
+    echo "  - libportal-dev"
+    echo "  - libportal-gtk3-dev"
     echo ""
     read -p "Continue? (y/n): " -n 1 -r
     echo ""
@@ -69,7 +71,7 @@ uninstall_packages() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Uninstall packages
         print_message "Removing packages..."
-        sudo apt remove --purge -y meson ninja-build valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-dev
+        sudo apt remove --purge -y meson ninja-build valac libgtk-3-dev libgranite-dev libgee-0.8-dev libjson-glib-dev libportal-dev libportal-gtk3-dev
         
         # Remove unnecessary dependencies
         print_message "Cleaning up unnecessary dependencies..."
@@ -94,7 +96,7 @@ check_status() {
     echo "--------------"
     
     # Check each package
-    for pkg in meson ninja-build valac libgtk-3-dev libgranite-dev libgee-0.8-dev; do
+    for pkg in meson ninja-build valac libgtk-3-dev libgranite-dev libgee-0.8-dev libportal-dev libportal-gtk3-dev; do
         if dpkg -l | grep -q "^ii  $pkg "; then
             echo -e "${GREEN}✓${NC} $pkg: installed"
         else
