@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Clipboard History
-Comment=A lightweight clipboard history manager for elementary OS
+Name=ClipStory
+Comment=A lightweight clipboard history manager
 Exec=com.github.gylangsatria.clipboard-history
 Icon=com.github.gylangsatria.clipboard-history
 Terminal=false

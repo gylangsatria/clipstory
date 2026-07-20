@@ -2,8 +2,8 @@
 <component type="desktop-application">
   <id>com.github.gylangsatria.clipboard-history</id>
 
-  <name>Clipboard History</name>
-  <summary>A lightweight clipboard history manager for elementary OS</summary>
+  <name>ClipStory</name>
+  <summary>A lightweight clipboard history manager</summary>
 
   <developer id="com.github.gylangsatria">
     <name>Gylang Satria</name>
@@ -14,7 +14,7 @@
 
   <description>
     <p>
-      Clipboard History is a lightweight clipboard manager built for elementary OS.
+      ClipStory is a lightweight clipboard manager that automatically stores everything you copy.
       It automatically stores everything you copy and lets you quickly search, reuse,
       and manage your clipboard history.
     </p>
@@ -57,7 +57,7 @@
   </screenshots>
 
   <releases>
-    <release version="1.4.5" date="2026-07-14">
+    <release version="1.5.0" date="2026-07-20">
       <description>
         <p>AppCenter readiness: new Application ID, Flatpak manifest, AppStream metainfo, and file restructuring.</p>
       </description>

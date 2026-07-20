@@ -1,5 +1,17 @@
 # Changelog / Code Review
 
+## Version 1.5.0
+
+### AppCenter Review Fixes
+- **Rename aplikasi**: `Clipboard History` → `ClipStory` (nama unik sesuai rekomendasi reviewer)
+- **Hapus referensi "for elementary OS"** dari deskripsi dan summary
+- **Autostart via Portal**: Ganti penulisan file `.desktop` dengan `Xdp.Portal.request_background()` (xdg-desktop-portal)
+- **Hapus `set_wmclass()` deprecated** — tidak diperlukan lagi, compiler warning hilang
+- **Fix icon About dialog**: `set_logo_icon_name()` menggunakan Application ID lengkap
+- **Fix `set_icon_name()` di window**: Dari `"clipboard-history"` → `"com.github.gylangsatria.clipboard-history"`
+- **Flatpak manifest**: Runtime 8, finish-args minimal (wayland + x11-fallback)
+- **Meson build**: Tambah dependency `libportal` dan `libportal-gtk3`
+
 ## Version 1.4.5
 
 ### AppCenter Readiness

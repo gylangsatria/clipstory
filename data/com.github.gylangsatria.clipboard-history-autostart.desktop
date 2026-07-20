@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Clipboard History
-Comment=Start clipboard history manager at login
+Name=ClipStory
+Comment=Start ClipStory at login
 Exec=com.github.gylangsatria.clipboard-history
 Icon=com.github.gylangsatria.clipboard-history
 Terminal=false

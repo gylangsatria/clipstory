@@ -1,9 +1,11 @@
-project('clipboard-history', 'vala', version: '1.4.5')
+project('clipboard-history', 'vala', version: '1.5.0')
 
 gtk = dependency('gtk+-3.0')
 granite = dependency('granite')
 gee = dependency('gee-0.8')
 json_glib = dependency('json-glib-1.0')
+libportal = dependency('libportal')
+libportal_gtk3 = dependency('libportal-gtk3')
 
 app_id = 'com.github.gylangsatria.clipboard-history'
 
@@ -14,7 +16,7 @@ executable(
         'src/window.vala',
         'src/clipboard-history.vala'
     ],
-    dependencies: [gtk, granite, gee, json_glib],
+    dependencies: [gtk, granite, gee, json_glib, libportal, libportal_gtk3],
     install: true
 )
 

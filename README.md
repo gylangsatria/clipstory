@@ -1,11 +1,9 @@
-# Clipboard History for elementary OS
+# ClipStory
 
 [![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.gylangsatria.clipboard-history)
 
-A lightweight clipboard history manager built for elementary OS using GTK and Granite.
-This application automatically stores copied text and allows you to quickly search, reuse, and manage clipboard items.
-
-Designed to integrate well with elementary OS style and workflows.
+A lightweight clipboard history manager built with GTK and Granite.
+ClipStory automatically stores copied text and allows you to quickly search, reuse, and manage clipboard items.
 
 ## Features
 
@@ -15,7 +13,7 @@ Designed to integrate well with elementary OS style and workflows.
 * Pin important items to protect them from deletion
 * Dark mode support
 * Configurable history limit
-* Auto-start at login option
+* Auto-start at login option (via Portal)
 * Clean and intuitive Granite interface
 
 ## Screenshots

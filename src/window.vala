@@ -26,20 +26,17 @@ public class MainWindow : Gtk.ApplicationWindow {
     public MainWindow(Gtk.Application app, ClipboardHistory manager) {
         
         Object(application: app,
-            title: "Clipboard History",
+            title: "ClipStory",
             default_width: 420,
             default_height: 500);
         
         this.manager = manager;
         
-        // Set role & wmclass untuk identifikasi window
-        // set_wmclass sudah deprecated sejak GTK 3.22 tapi masih diperlukan
-        // untuk beberapa window manager
-        this.set_wmclass("clipboard-history", "ClipboardHistory");
-        this.set_role("clipboard-history-main");
+        // Set role untuk identifikasi window
+        this.set_role("clipstory-main");
         
         // Set icon name yang sama dengan desktop entry
-        this.set_icon_name("clipboard-history");
+        this.set_icon_name("com.github.gylangsatria.clipboard-history");
         
         // Pastikan window tidak di-skip oleh window manager
         this.set_skip_taskbar_hint(false);
@@ -60,7 +57,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         var header = new Gtk.HeaderBar();
         header.show_close_button = true;
-        header.title = "Clipboard History";
+        header.title = "ClipStory";
         
         // Box untuk tombol di kanan header
         var header_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
@@ -110,18 +107,25 @@ public class MainWindow : Gtk.ApplicationWindow {
             manager.max_items = (int)max_items_spin.value;
         });
         
-        // Autostart toggle
+        // Autostart toggle (via xdg-desktop-portal)
         var autostart_label = new Gtk.Label("Auto Start:");
         autostart_label.xalign = 0;
         
         var autostart_switch = new Gtk.Switch();
         autostart_switch.halign = Align.START;
         autostart_switch.valign = Align.CENTER;
-        autostart_switch.active = is_autostart_enabled();
-        autostart_switch.tooltip_text = "Start Clipboard History automatically at login";
+        autostart_switch.active = false;
+        autostart_switch.tooltip_text = "Start ClipStory automatically at login";
         
         autostart_switch.notify["active"].connect(() => {
-            set_autostart(autostart_switch.active);
+            if (autostart_switch.active) {
+                request_autostart.begin((obj, res) => {
+                    bool granted = request_autostart.end(res);
+                    if (!granted) {
+                        autostart_switch.active = false;
+                    }
+                });
+            }
         });
         
         settings_grid.attach(max_items_label, 0, 0, 1, 1);
@@ -203,7 +207,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         version_label = new Gtk.Label("");
         version_label.get_style_context().add_class("dim-label");
-        version_label.set_markup("<small>Clipboard History v1.4.5</small>");
+        version_label.set_markup("<small>ClipStory v1.5.0</small>");
         
         // Tambahkan link ke repository atau info
         var about_button = new Gtk.Button.with_label("ℹ️");
@@ -248,104 +252,42 @@ public class MainWindow : Gtk.ApplicationWindow {
         refresh_list();
     }
     
-    // Cek apakah file autostart memiliki Hidden=true
-    bool is_file_disabled(string path) {
+    // Request autostart via xdg-desktop-portal (supports Flatpak)
+    async bool request_autostart() {
+        var portal = new Xdp.Portal();
+        
+        Xdp.Parent? parent = Xdp.parent_new_gtk(this);
+        
+        var command = new GenericArray<weak string>();
+        command.add("com.github.gylangsatria.clipboard-history");
+        
         try {
-            string content;
-            FileUtils.get_contents(path, out content);
-            return content.contains("Hidden=true");
+            return yield portal.request_background(
+                parent,
+                "ClipStory will automatically start when this device turns on and run in the background so your clipboard history is always available.",
+                (owned) command,
+                Xdp.BackgroundFlags.AUTOSTART,
+                null
+            );
         } catch (Error e) {
+            warning("Failed to request autostart: %s", e.message);
             return false;
-        }
-    }
-    
-    // Cek apakah autostart aktif (user file atau system file)
-    bool is_autostart_enabled() {
-        string user_file = Path.build_filename(
-            Environment.get_user_config_dir(), "autostart",
-            "com.github.gylangsatria.clipboard-history-autostart.desktop"
-        );
-        string system_file = "/etc/xdg/autostart/com.github.gylangsatria.clipboard-history-autostart.desktop";
-        
-        // Jika user override file exists:
-        if (FileUtils.test(user_file, FileTest.EXISTS)) {
-            // Enabled hanya jika tidak ada Hidden=true
-            return !is_file_disabled(user_file);
-        }
-        
-        // Jika tidak ada user file, cek system file
-        if (FileUtils.test(system_file, FileTest.EXISTS)) {
-            return !is_file_disabled(system_file);
-        }
-        
-        return false;
-    }
-    
-    // Mengaktifkan/menonaktifkan autostart
-    void set_autostart(bool enable) {
-        string autostart_dir = Path.build_filename(
-            Environment.get_user_config_dir(), "autostart"
-        );
-        string autostart_file = Path.build_filename(
-            autostart_dir, "com.github.gylangsatria.clipboard-history-autostart.desktop"
-        );
-        
-        // Buat direktori autostart jika belum ada
-        DirUtils.create_with_parents(autostart_dir, 0755);
-        
-        if (enable) {
-            // Tulis file autostart aktif (override system file)
-            string desktop_content = """[Desktop Entry]
-Name=Clipboard History
-Comment=Start clipboard history manager at login
-Exec=com.github.gylangsatria.clipboard-history
-Icon=com.github.gylangsatria.clipboard-history
-Terminal=false
-Type=Application
-Categories=Utility;GTK;
-X-GNOME-Autostart-enabled=true
-X-GNOME-Autostart-Delay=10
-""";
-            try {
-                FileUtils.set_contents(autostart_file, desktop_content);
-            } catch (Error e) {
-                warning("Failed to enable autostart: %s", e.message);
-            }
-        } else {
-            // Tulis file override dengan Hidden=true untuk menonaktifkan
-            // (mencegah system-wide file di /etc/xdg/autostart/ tetap jalan)
-            string desktop_content = """[Desktop Entry]
-Name=Clipboard History
-Comment=Start clipboard history manager at login
-Exec=com.github.gylangsatria.clipboard-history
-Icon=com.github.gylangsatria.clipboard-history
-Terminal=false
-Type=Application
-Categories=Utility;GTK;X-GNOME-Utilities;
-Hidden=true
-X-GNOME-Autostart-enabled=false
-""";
-            try {
-                FileUtils.set_contents(autostart_file, desktop_content);
-            } catch (Error e) {
-                warning("Failed to disable autostart: %s", e.message);
-            }
         }
     }
     
     void show_about_dialog() {
         var about = new Gtk.AboutDialog();
         about.set_transient_for(this);
-        about.set_program_name("Clipboard History");
-        about.set_version("1.4.5");
-        about.set_comments("Clipboard history for elementary OS");
+        about.set_program_name("ClipStory");
+        about.set_version("1.5.0");
+        about.set_comments("A clipboard history manager");
         about.set_copyright("© 2026 Gylang Satria");
         about.set_license_type(Gtk.License.GPL_3_0);
         about.set_website("https://github.com/gylangsatria/clipboard-history-elementaryos");
         about.set_website_label("GitHub Repository");
         about.set_authors({"Gylang Satria <sayugiteam@gmail.com>"});
         
-        about.set_logo_icon_name("clipboard-history");
+        about.set_logo_icon_name("com.github.gylangsatria.clipboard-history");
         
         about.run();
         about.destroy();
