@@ -36,7 +36,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         this.set_role("clipstory-main");
         
         // Set icon name yang sama dengan desktop entry
-        this.set_icon_name("com.github.gylangsatria.clipboard-history");
+        this.set_icon_name("com.github.gylangsatria.clipstory");
         
         // Pastikan window tidak di-skip oleh window manager
         this.set_skip_taskbar_hint(false);
@@ -259,7 +259,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         Xdp.Parent? parent = Xdp.parent_new_gtk(this);
         
         var command = new GenericArray<weak string>();
-        command.add("com.github.gylangsatria.clipboard-history");
+        command.add("com.github.gylangsatria.clipstory");
         
         try {
             return yield portal.request_background(
@@ -287,7 +287,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         about.set_website_label("GitHub Repository");
         about.set_authors({"Gylang Satria <sayugiteam@gmail.com>"});
         
-        about.set_logo_icon_name("com.github.gylangsatria.clipboard-history");
+        about.set_logo_icon_name("com.github.gylangsatria.clipstory");
         
         about.run();
         about.destroy();

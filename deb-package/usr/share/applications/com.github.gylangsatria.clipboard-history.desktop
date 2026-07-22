@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Clipboard History
-Comment=A lightweight clipboard history manager for elementary OS
-Exec=com.github.gylangsatria.clipboard-history
-Icon=com.github.gylangsatria.clipboard-history
-Terminal=false
-Type=Application
-Categories=Utility;GTK;
-Keywords=clipboard;history;paste;copy;manager;

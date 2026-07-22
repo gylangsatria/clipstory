@@ -1,8 +1,8 @@
-id: com.github.gylangsatria.clipboard-history
+id: com.github.gylangsatria.clipstory
 runtime: io.elementary.Platform
 runtime-version: '8'
 sdk: io.elementary.Sdk
-command: com.github.gylangsatria.clipboard-history
+command: com.github.gylangsatria.clipstory
 
 finish-args:
   # Wayland with X11 fallback
@@ -10,7 +10,7 @@ finish-args:
   - --socket=fallback-x11
 
 modules:
-  - name: clipboard-history
+  - name: clipstory
     buildsystem: meson
     sources:
       - type: dir

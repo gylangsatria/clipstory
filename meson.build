@@ -1,4 +1,4 @@
-project('clipboard-history', 'vala', version: '1.5.0')
+project('clipstory', 'vala', version: '1.5.0')
 
 gtk = dependency('gtk+-3.0')
 granite = dependency('granite')
@@ -7,7 +7,7 @@ json_glib = dependency('json-glib-1.0')
 libportal = dependency('libportal')
 libportal_gtk3 = dependency('libportal-gtk3')
 
-app_id = 'com.github.gylangsatria.clipboard-history'
+app_id = 'com.github.gylangsatria.clipstory'
 
 executable(
     app_id,
@@ -21,22 +21,17 @@ executable(
 )
 
 install_data(
-    'data/com.github.gylangsatria.clipboard-history.desktop',
+    'data/com.github.gylangsatria.clipstory.desktop',
     install_dir: join_paths(get_option('datadir'), 'applications')
 )
 
 install_data(
-    'data/icons/hicolor/128x128/apps/com.github.gylangsatria.clipboard-history.png',
+    'data/icons/hicolor/128x128/apps/com.github.gylangsatria.clipstory.png',
     install_dir: join_paths(get_option('datadir'), 'icons/hicolor/128x128/apps')
-)
-
-install_data(
-    'data/com.github.gylangsatria.clipboard-history-autostart.desktop',
-    install_dir: join_paths(get_option('sysconfdir'), 'xdg', 'autostart')
 )
 
 # AppStream metainfo
 install_data(
-    'data/com.github.gylangsatria.clipboard-history.metainfo.xml',
+    'data/com.github.gylangsatria.clipstory.metainfo.xml',
     install_dir: join_paths(get_option('datadir'), 'metainfo')
 )

@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=ClipStory
 Comment=A lightweight clipboard history manager
-Exec=com.github.gylangsatria.clipboard-history
-Icon=com.github.gylangsatria.clipboard-history
+Exec=com.github.gylangsatria.clipstory
+Icon=com.github.gylangsatria.clipstory
 Terminal=false
 Type=Application
 Categories=Utility;GTK;

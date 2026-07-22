@@ -1,6 +1,6 @@
 # ClipStory
 
-[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.gylangsatria.clipboard-history)
+[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.gylangsatria.clipstory)
 
 A lightweight clipboard history manager built with GTK and Granite.
 ClipStory automatically stores copied text and allows you to quickly search, reuse, and manage clipboard items.
@@ -31,7 +31,7 @@ Coming soon to elementary OS AppCenter!
 ### Flatpak
 
 ```bash
-flatpak install com.github.gylangsatria.clipboard-history
+flatpak install com.github.gylangsatria.clipstory
 ```
 
 ### Build from source
@@ -78,7 +78,7 @@ The project includes a helper script `dev-setup.sh` with an interactive menu for
 Menu options:
 ```
 ========================================
-  Clipboard History - Dev Tools
+  ClipStory - Dev Tools
 ========================================
  1. Install packages         — Install all dev dependencies
  2. Uninstall packages       — Remove dev dependencies
@@ -117,20 +117,19 @@ clipstory
  │   └── clipboard-history.vala
  │
  ├── data
- │   ├── com.github.gylangsatria.clipboard-history.desktop
- │   ├── com.github.gylangsatria.clipboard-history-autostart.desktop
- │   ├── com.github.gylangsatria.clipboard-history.metainfo.xml
+ │   ├── com.github.gylangsatria.clipstory.desktop
+ │   ├── com.github.gylangsatria.clipstory.metainfo.xml
  │   └── icons
  │       └── hicolor
  │           └── 128x128
  │               └── apps
- │                   └── com.github.gylangsatria.clipboard-history.png
+ │                   └── com.github.gylangsatria.clipstory.png
  │
  ├── assets
  │   ├── screenshot-dark.png
  │   └── screenshot-light.png
  │
- ├── com.github.gylangsatria.clipboard-history.yml
+ ├── com.github.gylangsatria.clipstory.yml
  ├── deb-package
  ├── build
  └── README.md

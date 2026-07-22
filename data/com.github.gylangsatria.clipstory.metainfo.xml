@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.github.gylangsatria.clipboard-history</id>
+  <id>com.github.gylangsatria.clipstory</id>
 
   <name>ClipStory</name>
   <summary>A lightweight clipboard history manager</summary>
@@ -47,11 +47,11 @@
 
   <screenshots>
     <screenshot type="default">
-      <caption>Clipboard History in dark mode</caption>
+      <caption>ClipStory in dark mode</caption>
       <image>https://raw.githubusercontent.com/gylangsatria/clipstory/main/assets/screenshot-dark.png</image>
     </screenshot>
     <screenshot>
-      <caption>Clipboard History in light mode</caption>
+      <caption>ClipStory in light mode</caption>
       <image>https://raw.githubusercontent.com/gylangsatria/clipstory/main/assets/screenshot-light.png</image>
     </screenshot>
   </screenshots>
@@ -96,9 +96,9 @@
 
   <content_rating type="oars-1.1" />
 
-  <launchable type="desktop-id">com.github.gylangsatria.clipboard-history.desktop</launchable>
+  <launchable type="desktop-id">com.github.gylangsatria.clipstory.desktop</launchable>
 
-  <translation type="gettext">clipboard-history</translation>
+  <translation type="gettext">clipstory</translation>
 
   <custom>
     <value key="Purism::form_factor">workstation</value>
