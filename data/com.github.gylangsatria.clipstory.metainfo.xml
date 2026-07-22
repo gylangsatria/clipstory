@@ -57,6 +57,11 @@
   </screenshots>
 
   <releases>
+    <release version="1.5.1" date="2026-07-22">
+      <description>
+        <p>AppCenter review fixes: correct metainfo validation, proper form factor recommends, and release tag for v1.5.1.</p>
+      </description>
+    </release>
     <release version="1.5.0" date="2026-07-20">
       <description>
         <p>AppCenter readiness: new Application ID, Flatpak manifest, AppStream metainfo, and file restructuring.</p>
@@ -100,8 +105,8 @@
 
   <translation type="gettext">clipstory</translation>
 
-  <custom>
-    <value key="Purism::form_factor">workstation</value>
-    <value key="Purism::form_factor">mobile</value>
-  </custom>
+  <recommends>
+    <id>org.freedesktop.formfactor.workstation</id>
+    <id>org.freedesktop.formfactor.mobile</id>
+  </recommends>
 </component>
