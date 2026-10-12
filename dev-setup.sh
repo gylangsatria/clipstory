@@ -163,6 +163,48 @@ install_project() {
     fi
 }
 
+# Function to uninstall project
+uninstall_project() {
+    # Pick the build dir whose install actually exists on disk (build-user => ~/.local, build => /usr/local)
+    local dir="" prefix=""
+    for d in build-user build; do
+        [ -f "$d/meson-private/install.dat" ] || continue
+        local p=$(sed -n 's/^prefix = //p' "$d/meson-private/cmd_line.txt" 2>/dev/null)
+        if [ -x "${p:-/usr/local}/bin/com.github.gylangsatria.clipstory" ]; then
+            dir="$d"; prefix="$p"; break
+        fi
+        [ -z "$dir" ] && { dir="$d"; prefix="$p"; }
+    done
+
+    if [ -z "$dir" ]; then
+        print_error "No configured build directory found! Run 'Build (meson setup)' first."
+        return
+    fi
+
+    print_warning "This will remove ClipStory files from prefix: ${prefix:-/usr/local} (build dir: $dir)."
+    read -p "Continue? (y/n): " -n 1 -r
+    echo ""
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        print_message "Uninstalling project from system..."
+        # Only need sudo when the prefix is a system location
+        local sudo_cmd=""
+        [[ "$prefix" == /usr* ]] && sudo_cmd="sudo"
+        $sudo_cmd ninja -C "$dir" uninstall
+        if [ $? -eq 0 ]; then
+            # Refresh schema cache so the removed schema is dropped
+            local schemas="${prefix:-/usr}/share/glib-2.0/schemas"
+            $sudo_cmd glib-compile-schemas "$schemas" 2>/dev/null
+            print_message "Uninstallation finished!"
+        else
+            print_error "Uninstallation failed!"
+            exit 1
+        fi
+    else
+        print_message "Uninstallation cancelled."
+    fi
+}
+
 # Function to build .deb package
 build_deb() {
     print_message "Starting .deb package build..."
@@ -196,6 +238,8 @@ build_deb() {
     
     # Build .deb package
     print_message "Building .deb package..."
+    # dpkg-deb requires the control file to end with a newline
+    [ -n "$(tail -c1 deb-package/DEBIAN/control)" ] && printf '\n' >> deb-package/DEBIAN/control
     dpkg-deb --build deb-package/
     if [ $? -ne 0 ]; then
         print_error "Failed to build .deb package!"
@@ -228,9 +272,10 @@ show_menu() {
     echo " 4. Build (meson setup)"
     echo " 5. Compile (meson compile)"
     echo " 6. Install (sudo ninja install)"
+    echo " 7. Uninstall (sudo ninja uninstall)"
     echo "----------------------------------------"
-    echo " 7. Build .deb package"
-    echo " 8. Exit"
+    echo " 8. Build .deb package"
+    echo " 9. Exit"
     echo "========================================"
 }
 
@@ -245,7 +290,7 @@ main() {
     
     while true; do
         show_menu
-        read -p "Select option (1-8): " choice
+        read -p "Select option (1-9): " choice
         
         case $choice in
             1)
@@ -267,9 +312,12 @@ main() {
                 install_project
                 ;;
             7)
-                build_deb
+                uninstall_project
                 ;;
             8)
+                build_deb
+                ;;
+            9)
                 print_message "Thank you, exiting script..."
                 exit 0
                 ;;
