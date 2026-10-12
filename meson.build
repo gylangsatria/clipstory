@@ -1,4 +1,6 @@
-project('clipstory', 'vala', version: '1.5.2')
+project('clipstory', 'vala', version: '1.6.0')
+
+gnome = import('gnome')
 
 gtk = dependency('gtk+-3.0')
 granite = dependency('granite')
@@ -35,3 +37,9 @@ install_data(
     'data/com.github.gylangsatria.clipstory.metainfo.xml',
     install_dir: join_paths(get_option('datadir'), 'metainfo')
 )
+
+# GSettings schema
+subdir('data')
+
+# Compile the GSettings schema after install so the app finds it at runtime
+gnome.post_install(glib_compile_schemas: true)

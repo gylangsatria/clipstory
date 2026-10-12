@@ -1,5 +1,21 @@
 # Changelog / Code Review
 
+## Version 1.6.0
+
+### Features
+- **Autostart headless**: Saat "Auto Start" aktif, aplikasi berjalan di background tanpa memunculkan window setelah login. Opsi `--headless` ditambahkan (`HANDLES_COMMAND_LINE` + override `command_line()`), dan command portal di `request_autostart()` menyertakan `--headless`. Clipboard monitoring tetap jalan karena `hold()` menahan proses hidup. Launch manual dari menu tetap menampilkan window (single-instance re-show).
+- **Persistensi preferensi via GSettings**: `max-items` dan `dark-mode` kini disimpan.
+
+### Bug Fixes
+- **Setting max history selalu balik ke default**: Sebelumnya `_max_items` selalu kembali ke 50 setiap launch. Sekarang dibaca dari GSettings (`max-items`, rentang 10–500). Nilai tersimpan benar-benar di-enforce saat startup.
+- **Dark mode tidak tersimpan**: Pilihan user kini persist (`dark-mode`); bila belum pernah diubah, mengikuti preferensi sistem.
+
+### Technical
+- Schema baru `data/com.github.gylangsatria.clipstory.gschema.xml`, di-install dan di-compile lewat `subdir('data')` + `gnome.compile_schemas()`.
+
+### Catatan upgrade
+- Entry autostart yang sudah terdaftar sebelum update ini masih memakai command lama (tanpa `--headless`). Toggle Auto Start off→on sekali agar entry baru terpasang.
+
 ## Version 1.5.2
 
 ### Bug Fixes

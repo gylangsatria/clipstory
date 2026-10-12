@@ -10,11 +10,13 @@ public class ClipboardHistory : Object {
     private string last_text = "";
     private int _max_items = 50;
     private string data_file;
+    private GLib.Settings settings;
 
     public int max_items {
         get { return _max_items; }
         set {
             _max_items = value;
+            settings.set_int("max-items", value);
             trim_history();
             history_changed();
         }
@@ -32,6 +34,11 @@ public class ClipboardHistory : Object {
 
         clipboard = Clipboard.get(Gdk.SELECTION_CLIPBOARD);
         display = Gdk.Display.get_default();
+
+        // Baca preferensi tersimpan (max_items). Tanpa ini, setting user
+        // selalu balik ke default 50 setiap launch.
+        settings = new GLib.Settings("com.github.gylangsatria.clipstory");
+        _max_items = settings.get_int("max-items");
 
         // Deteksi Wayland — di Wayland owner_change tidak reliabel
         string? session_type = Environment.get_variable("XDG_SESSION_TYPE");
@@ -313,8 +320,7 @@ public class ClipboardHistory : Object {
                 }
             }
 
-            // Enforce max_items setelah load — walau user pernah set lebih besar,
-            // gunakan nilai aktif (default 50) saat startup.
+            // Enforce max_items setelah load — pakai nilai tersimpan dari GSettings.
             if (history.size > _max_items) {
                 trim_history();
             }

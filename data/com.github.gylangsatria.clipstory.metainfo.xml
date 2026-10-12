@@ -23,8 +23,8 @@
       <li>Search through your clipboard history instantly</li>
       <li>Pin important items so they never get deleted</li>
       <li>Dark mode support</li>
-      <li>Configurable history limit</li>
-      <li>Auto-start at login option</li>
+      <li>Configurable history limit, remembered across launches</li>
+      <li>Auto-start at login option, running quietly in the background</li>
       <li>Clean and intuitive Granite interface</li>
     </ul>
   </description>
@@ -57,6 +57,16 @@
   </screenshots>
 
   <releases>
+    <release version="1.6.0" date="2026-10-12">
+      <description>
+        <p>Background autostart and persistent preferences.</p>
+        <ul>
+          <li>Auto-start now runs in the background without opening a window at login</li>
+          <li>History limit and dark mode preferences are remembered across launches (GSettings)</li>
+          <li>Re-launching the app reopens the window even while running in the background</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.5.2" date="2026-08-29">
       <description>
         <p>Wayland polling de-duplication, guaranteed history save on quit, plus stricter history trimming.</p>

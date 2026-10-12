@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="com.github.gylangsatria.clipstory" path="/com/github/gylangsatria/clipstory/">
+    <key name="max-items" type="i">
+      <default>50</default>
+      <range min="10" max="500"/>
+      <summary>Maximum number of clipboard items to store</summary>
+      <description>Oldest non-pinned items are trimmed once history exceeds this limit.</description>
+    </key>
+    <key name="dark-mode" type="b">
+      <default>false</default>
+      <summary>Use dark theme</summary>
+      <description>User's explicit dark mode choice. When unset, the app follows the system preference.</description>
+    </key>
+  </schema>
+</schemalist>

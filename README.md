@@ -11,9 +11,9 @@ ClipStory automatically stores copied text and allows you to quickly search, reu
 * Searchable clipboard history
 * Copy previous clipboard items with one click or double-click
 * Pin important items to protect them from deletion
-* Dark mode support
-* Configurable history limit
-* Auto-start at login option (via Portal)
+* Dark mode support (remembered across launches)
+* Configurable history limit (remembered across launches)
+* Auto-start at login, running quietly in the background (via Portal)
 * Clean and intuitive Granite interface
 
 ## Screenshots
@@ -119,6 +119,8 @@ clipstory
  ├── data
  │   ├── com.github.gylangsatria.clipstory.desktop
  │   ├── com.github.gylangsatria.clipstory.metainfo.xml
+ │   ├── com.github.gylangsatria.clipstory.gschema.xml
+ │   ├── meson.build
  │   └── icons
  │       └── hicolor
  │           └── 128x128
@@ -147,7 +149,14 @@ Users can:
 * remove unwanted entries
 * clear the entire history
 
-A maximum history size prevents unlimited memory usage.
+A maximum history size prevents unlimited memory usage. The history limit and
+dark mode preference are stored with GSettings and restored on the next launch.
+
+### Running in the background
+
+With Auto Start enabled, ClipStory starts headless after login — it keeps
+monitoring the clipboard without opening a window. Launching it again from the
+app menu opens the window of the already running instance.
 
 ## Future Improvements
 
@@ -159,6 +168,8 @@ Possible improvements for future versions:
 * Persistent history using SQLite
 * Global keyboard shortcuts
 * Pinned clipboard items [Added in 0d5c60e]
+* Background autostart [Added in 1.6.0]
+* Persistent preferences via GSettings [Added in 1.6.0]
 
 ## License
 

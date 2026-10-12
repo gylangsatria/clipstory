@@ -70,13 +70,18 @@ public class MainWindow : Gtk.ApplicationWindow {
         dark_mode_switch = new Gtk.Switch();
         dark_mode_switch.valign = Align.CENTER;
         
-        // Cek preferensi sistem untuk dark mode
-        var settings = Gtk.Settings.get_default();
-        bool is_dark = settings.gtk_application_prefer_dark_theme;
+        // Dark mode: pakai pilihan user yang tersimpan bila ada, jika belum
+        // pernah diubah ikuti preferensi sistem.
+        var gtk_settings = Gtk.Settings.get_default();
+        var prefs = new GLib.Settings("com.github.gylangsatria.clipstory");
+        bool is_dark = (prefs.get_user_value("dark-mode") != null)
+            ? prefs.get_boolean("dark-mode")
+            : gtk_settings.gtk_application_prefer_dark_theme;
         dark_mode_switch.active = is_dark;
         apply_dark_mode(is_dark);
         
         dark_mode_switch.notify["active"].connect(() => {
+            prefs.set_boolean("dark-mode", dark_mode_switch.active);
             apply_dark_mode(dark_mode_switch.active);
         });
         
@@ -207,7 +212,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         version_label = new Gtk.Label("");
         version_label.get_style_context().add_class("dim-label");
-        version_label.set_markup("<small>ClipStory v1.5.2</small>");
+        version_label.set_markup("<small>ClipStory v1.6.0</small>");
         
         // Tambahkan link ke repository atau info
         var about_button = new Gtk.Button.with_label("ℹ️");
@@ -260,6 +265,8 @@ public class MainWindow : Gtk.ApplicationWindow {
         
         var command = new GenericArray<weak string>();
         command.add("com.github.gylangsatria.clipstory");
+        // --headless: saat autostart, jalan di background tanpa memunculkan window
+        command.add("--headless");
         
         try {
             return yield portal.request_background(
@@ -279,7 +286,7 @@ public class MainWindow : Gtk.ApplicationWindow {
         var about = new Gtk.AboutDialog();
         about.set_transient_for(this);
         about.set_program_name("ClipStory");
-        about.set_version("1.5.2");
+        about.set_version("1.6.0");
         about.set_comments("A clipboard history manager");
         about.set_copyright("© 2026 Gylang Satria");
         about.set_license_type(Gtk.License.GPL_3_0);
